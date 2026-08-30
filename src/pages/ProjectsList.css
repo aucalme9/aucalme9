@@ -1,0 +1,242 @@
+/* Projects — 3D 오빗 프로젝트 네비게이터.
+   카드가 카메라 중심 링에 360° 배치, 마우스=시선 미세이동, 클릭드래그=회전, 호버=확대.
+   ▶ 크기·위치·카메라 튜닝(RING_SIZE·CARD_SIZE·RING_POS_*·PERSPECTIVE·DRAG_SPEED·EASE 등, 0~100 은 50=기본)
+     은 src/pages/ProjectsList.jsx 상단 상수에서.
+   ▶ 카드 글자 크기·텍스트 레이어·호버 배율·그리드 선두께는 아래 CSS 에서.
+   ▶ 카드 내용(제목·부제·이미지)은 src/data/projects.js.
+   기존 컨셉 유지: 검정+보라 / 모서리 0 / gradient·glow 금지(격자·노이즈 패턴만 허용). */
+
+.projects-list {
+  position: relative;
+  overflow: hidden;              /* 링에서 튀어나온 3D 씬을 뷰포트 밖으로 클립 */
+  margin-top: -64px;             /* sticky 헤더(Header.css .site-header__inner height:64px) 밑으로 끌어올려
+                                     오빗이 '진짜' 화면 전체를 쓰게 함 → 링이 뷰포트 정중앙에 옴 */
+}
+
+/* ── 3D 스테이지 ─────────────────────────────────────────────────────── */
+.orbit {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg);
+  cursor: grab;
+  perspective-origin: 50% 50%;   /* 소실점(카메라)을 섹션 정중앙에 = 링이 화면 중앙에 옴 */
+  user-select: none;
+}
+.orbit:active { cursor: grabbing; }
+
+.orbit__world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);      /* JS 가 매 프레임 덮어씀 */
+}
+
+/* ── 그리드 공간 (바닥/천장 평면) ── */
+.orbit__grid {
+  --grid-line: 3px;             /* [그리드 선 두께] 숫자만 바꾸면 됨 */
+  --grid-gap: 80px;             /* [그리드 칸 간격] */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3200px;
+  height: 3200px;
+  margin: -1600px;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg,
+      transparent 0 calc(var(--grid-gap) - var(--grid-line)),
+      var(--color-line) calc(var(--grid-gap) - var(--grid-line)) var(--grid-gap)),
+    repeating-linear-gradient(90deg,
+      transparent 0 calc(var(--grid-gap) - var(--grid-line)),
+      var(--color-line) calc(var(--grid-gap) - var(--grid-line)) var(--grid-gap));
+}
+/* [바닥/천장 높이] 값이 클수록 더 멀리(아래/위로) 밀려나 카드를 안 가림. */
+.orbit__grid--floor {
+  transform: translateY(var(--floor-drop, 520px)) rotateX(90deg);
+  opacity: 0.5;
+}
+.orbit__grid--ceil {
+  transform: translateY(calc(-1 * var(--ceil-rise, 560px))) rotateX(-90deg);
+  opacity: 0.25;
+}
+
+/* ── 카드 ──
+   크기는 --card-w / --card-h (JS 의 CARD_SIZE 에서 옴). margin 은 그 절반을 자동 계산 → 링 위 중앙 정렬.
+   opacity / z-index 는 JS 가 각도에 따라 매 프레임 지정. 호버는 .is-hover 클래스(JS 좌표 판정).
+   pointer-events:none → 마우스 클릭·호버는 스테이지가 좌표로 처리(겹침 hit-test 문제 회피).
+   키보드 Tab/Enter 로는 그대로 이동 가능. */
+.orbit__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--card-w, 280px);
+  height: var(--card-h, 360px);
+  margin: calc(var(--card-h, 360px) / -2) calc(var(--card-w, 280px) / -2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border: var(--border);
+  background: var(--color-surface);          /* 이미지 로드 전/실패 시 바탕 */
+  color: var(--color-text-primary);
+  text-decoration: none;
+  pointer-events: none;
+  backface-visibility: hidden;
+  transform: var(--card-t);                  /* 링 배치(JS 계산) — 손대지 말 것 */
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+/* 정면 카드 위에 마우스가 있을 때 (JS 가 .is-hover 부여) */
+.orbit__card.is-hover {
+  transform: var(--card-t) scale(var(--card-hover, 1.15));  /* [호버 확대 배율] */
+  border-color: var(--color-purple-500);
+}
+/* 정면 카드 위 → 커서를 포인터로 */
+.orbit--over { cursor: pointer; }
+
+/* 카드 전체 커버 이미지 */
+.orbit__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.2);
+}
+.orbit__card-img--empty { background: var(--hatch); }  /* 이미지 없을 때 사선 패턴 */
+
+/* 텍스트 레이어 — 뒤 이미지에 백드롭 필터(블러+어둡게)를 걸어 사진과 분리해 보이게.
+   [텍스트 레이어 효과] 필터 세기는 --card-body-filter / 틴트는 background-color 로 조절. */
+.orbit__card-body {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-top: var(--border);
+  background-color: rgba(10, 10, 11, 0.55);   /* 백드롭 필터가 막힌 브라우저용 최소 틴트 */
+  backdrop-filter: var(--card-body-filter, blur(10px) brightness(0.4) saturate(0.8));
+  -webkit-backdrop-filter: var(--card-body-filter, blur(10px) brightness(0.4) saturate(0.8));
+}
+
+.orbit__card-index { color: var(--color-purple-400); }
+/* [글자 크기] 카드 제목 */
+.orbit__card-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+/* [글자 크기] 카드 부제 */
+.orbit__card-sub {
+  color: var(--color-text-secondary);
+  font-size: var(--fs-small);
+}
+
+/* ── 하단 각도 룰러 (카메라 시선 각도에 배치된 프로젝트 넘버) ── */
+.orbit__ruler {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-3);
+  height: 56px;
+  overflow: hidden;
+  pointer-events: none;
+  border-top: var(--border);
+}
+/* 중앙 기준선 (현재 정면 표시) */
+.orbit__ruler::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-purple-500);
+}
+/* 눈금 + 넘버 스트립 — JS 가 translateX 로 헤딩에 맞춰 이동 (한 바퀴 단위로 감아 끊김 없음).
+   폭 0, 원점이 화면 중앙 → 자식 넘버는 중앙 기준 left(px) 로 배치. */
+.orbit__ruler-ticks {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+.orbit__ruler-ticks::before {                 /* 눈금 텍스처 (중앙 기준 ±6000px) */
+  content: '';
+  position: absolute;
+  left: -6000px;
+  width: 12000px;
+  bottom: 6px;
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--color-line-strong) 0 1px, transparent 1px 22px);
+}
+.orbit__ruler-num {
+  position: absolute;
+  bottom: 16px;
+  transform: translateX(-50%);
+  color: var(--color-text-tertiary);
+}
+/* 현재(정면) 프로젝트 번호 크게 */
+.orbit__ruler-readout {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  color: var(--color-purple-400);
+}
+
+.orbit__hint {
+  position: absolute;
+  left: 50%;
+  top: calc(64px + var(--space-3));   /* 헤더(64px) 아래로 */
+  transform: translateX(-50%);
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+/* ── 폴백 (기본 숨김) ── */
+.projects-list__fallback { display: none; }
+
+.projects-list__label {
+  display: block;
+  color: var(--color-purple-400);
+  margin-bottom: var(--space-3);
+}
+
+.projects-list__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--pl-cols, 3), 1fr);
+  gap: var(--pl-gap, var(--space-3));
+}
+.projects-list__grid .project-card__frame {
+  aspect-ratio: var(--pl-card-ratio, 16 / 9);
+}
+
+/* ── 접근성: 모션 최소화 → 전환 제거 (패럴럭스·이징은 JS 에서 차단) ── */
+@media (prefers-reduced-motion: reduce) {
+  .orbit__card { transition: border-color 200ms ease; }
+  .orbit__card.is-hover { transform: var(--card-t) scale(1.04); }
+}
+
+/* ── 포인터 없음 / 좁은 화면 → 3D 숨기고 카드 그리드 폴백 ── */
+@media (pointer: coarse), (max-width: 700px) {
+  .projects-list { overflow: visible; margin-top: 0; }
+  .orbit { display: none; }
+  .projects-list__fallback {
+    display: block;
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-7);
+  }
+}
+
+@media (max-width: 900px) {
+  .projects-list__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .projects-list__grid { grid-template-columns: 1fr; }
+}

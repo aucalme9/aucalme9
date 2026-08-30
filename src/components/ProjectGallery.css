@@ -1,0 +1,85 @@
+/* 상세 페이지 스틸컷 슬라이드 — 구조는 src/components/ProjectGallery.jsx
+   이미지 목록 입력 위치: src/data/projects.js 의 gallery[] 배열 */
+
+.project-gallery {
+  width: 100%;
+}
+
+/* [크기조정] 스틸컷 프레임 비율(16 / 9). 영상 프레임과 맞추면 나란히 볼 때 높이가 같아짐 */
+.project-gallery__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: var(--border);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.project-gallery__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.15);
+}
+
+.project-gallery__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+  background: var(--hatch);
+}
+
+.project-gallery--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  border: var(--border);
+  color: var(--color-text-tertiary);
+  background: var(--hatch);
+}
+
+/* [위치/크기 조정] ‹ › 화살표 버튼. top: 50% = 세로 중앙 / width·height = 버튼 크기 */
+.project-gallery__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-text-primary);
+  background: rgba(10, 10, 11, 0.7);
+  border: var(--border);
+  transition: border-color var(--transition-base), color var(--transition-base);
+}
+
+.project-gallery__nav:hover {
+  border-color: var(--color-purple-500);
+  color: var(--color-purple-400);
+}
+
+/* [위치조정] 이전 버튼을 왼쪽 모서리에서 얼마나 띄울지 */
+.project-gallery__nav--prev {
+  left: var(--space-2);
+}
+
+/* [위치조정] 다음 버튼을 오른쪽 모서리에서 얼마나 띄울지 */
+.project-gallery__nav--next {
+  right: var(--space-2);
+}
+
+/* [위치조정] "01 / 03" 카운터. bottom / right 로 모서리에서의 거리 조절 */
+.project-gallery__counter {
+  position: absolute;
+  bottom: var(--space-2);
+  right: var(--space-2);
+  color: var(--color-text-primary);
+  background: rgba(10, 10, 11, 0.7);
+  padding: 2px 6px;
+}

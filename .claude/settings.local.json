@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vite *)",
+      "Bash(taskkill //F //IM node.exe //FI \"WINDOWTITLE eq *vite*\")",
+      "Bash(awk '{print $1}')",
+      "Bash(xargs -r kill)",
+      "Bash(curl -s -o /dev/null -w \"5179 still up? %{http_code}\\\\n\" http://localhost:5179/portfolio/)",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''node.exe'\\\\''\" | Where-Object { $_.CommandLine -match '\\\\''vite'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; \"killed PID $\\($_.ProcessId\\)\" }')",
+      "Bash(curl -s -o /dev/null -w \"5178:%{http_code} \" http://localhost:5178/portfolio/)",
+      "Bash(curl -s -o /dev/null -w \"5179:%{http_code}\\\\n\" http://localhost:5179/portfolio/)",
+      "Bash(node -e \"try{require.resolve\\('playwright'\\);console.log\\('playwright OK'\\)}catch\\(e\\){console.log\\('no playwright'\\)}\")",
+      "Bash(node -e \"try{require.resolve\\('puppeteer'\\);console.log\\('puppeteer OK'\\)}catch\\(e\\){console.log\\('no puppeteer'\\)}\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -sf http://127.0.0.1:5187/portfolio/)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --hide-scrollbars --window-size=1440,900 --virtual-time-budget=4000 --screenshot=C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad/orbit-1440.png 'http://127.0.0.1:5187/portfolio/#/projects')",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --hide-scrollbars --window-size=560,900 --virtual-time-budget=4000 --screenshot=C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad/orbit-mobile.png 'http://127.0.0.1:5187/portfolio/#/projects')",
+      "Read(//tmp/**)",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''node.exe'\\\\''\" | Where-Object { $_.CommandLine -match '\\\\''vite'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
+      "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Where-Object { \\\\$_.CommandLine -match 'vite' } | ForEach-Object { Stop-Process -Id \\\\$_.ProcessId -Force }\" 2>&1 | head -1; rm -f \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/orbit-*.png; echo \"cleaned\"; npx vite build 2>&1 | tail -4)",
+      "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\\\"Name='node.exe'\\\\\" | Where-Object { \\\\$_.CommandLine -match 'vite' } | ForEach-Object { Stop-Process -Id \\\\$_.ProcessId -Force }\" 2>&1 | head -1; rm -f \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/orbit-*.png; npx vite build 2>&1 | tail -4)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --use-gl=angle --use-angle=swiftshader --hide-scrollbars --window-size=1440,900 --virtual-time-budget=5000 --screenshot=C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad/orbit-v7b.png 'http://127.0.0.1:5191/portfolio/#/projects')",
+      "Bash(node -e \"console.log\\('node', process.version, 'WebSocket:', typeof WebSocket\\)\")",
+      "Bash(SC=\"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"; rm -f \"$SC\"/*.mjs \"$SC\"/*.png; npx vite build 2>&1 | tail -4)",
+      "Bash(rm -f \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.png \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.mjs; echo cleaned)",
+      "Bash(rm -f \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.png \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.mjs; npx vite build 2>&1 | tail -4)",
+      "Bash(rm -f \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.png \"C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad\"/*.mjs 2>/dev/null; npx vite build 2>&1 | tail -3)",
+      "Bash(npx vite preview --port 4173 > /tmp/vite-preview.log 2>&1 & *)",
+      "Bash(node fps.mjs)",
+      "Bash(pkill -f \"vite preview\")",
+      "Bash('C:/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --hide-scrollbars --window-size=1440,900 --virtual-time-budget=4000 --screenshot=C:/Users/aucal/AppData/Local/Temp/claude/d--acm2026-0-portfolio-v0/aa80b3fa-b515-41e6-b580-60dd48b301ba/scratchpad/home-default.png 'http://localhost:4173/portfolio/#/')"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\aucal\\AppData\\Local\\Temp\\claude\\d--acm2026-0-portfolio-v0\\aa80b3fa-b515-41e6-b580-60dd48b301ba\\scratchpad",
+      "\\tmp"
+    ]
+  }
+}

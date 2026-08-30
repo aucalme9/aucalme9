@@ -1,0 +1,17 @@
+/* 하단 푸터 스타일 — 구조는 src/components/Footer.jsx / 문구는 src/i18n/strings.js */
+
+/* [여백조정] 본문과 푸터 사이 간격(margin-top) */
+.site-footer {
+  border-top: var(--border);
+  margin-top: var(--space-6);
+}
+
+/* [좌우여백] 푸터도 .container 를 함께 써서 본문과 좌우가 맞음
+   (전역 좌우 여백: src/styles/tokens.css --page-gutter)
+   [크기조정] 푸터 높이 / [위치조정] 좌·우 문구 양끝 정렬 */
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}

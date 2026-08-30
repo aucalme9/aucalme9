@@ -1,0 +1,71 @@
+/* 홈 히어로 — 구조는 src/components/Hero.jsx / 문구는 src/i18n/strings.js
+   섹션 여백·높이·순서·정렬은 src/pages/Home.jsx 의 BLOCKS.hero 에서 조절. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--block-align, flex-start);
+}
+
+/* flex 안에서 .container(margin:0 auto)가 내용 폭으로 쪼그라들지 않도록 폭 고정 */
+.hero > .container {
+  width: 100%;
+}
+
+/* [여백조정] 상단 메타 줄과 대제목 사이 간격(margin-bottom) / 메타 요소 사이 간격(gap) */
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  color: var(--color-purple-400);
+}
+
+.hero__meta-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--color-line-strong);
+}
+
+.hero__system-log {
+  position: relative;
+  height: 14px;
+  overflow: hidden;
+  color: var(--color-text-tertiary);
+}
+
+.hero__system-log span {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  animation: sys-cycle 12s infinite;
+}
+
+@keyframes sys-cycle {
+  0%, 2% { opacity: 0; transform: translateY(4px); }
+  4%, 21% { opacity: 1; transform: translateY(0); }
+  25%, 100% { opacity: 0; }
+}
+
+/* [크기조정] 대제목 글자 크기(--fs-hero, tokens.css) / 줄간격(line-height) / 줄폭(max-width: 18ch) */
+.hero__title {
+  font-size: var(--fs-hero);
+  line-height: 1.05;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  max-width: 18ch;
+}
+
+/* [여백조정] 설명 문단 위 간격 / [크기조정] 줄폭(max-width: 44ch)·글자 크기 */
+.hero__desc {
+  margin-top: var(--space-3);
+  max-width: 44ch;
+  color: var(--color-text-secondary);
+  font-size: 1.0625rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__system-log span {
+    animation: none;
+  }
+}

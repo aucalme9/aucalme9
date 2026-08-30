@@ -1,0 +1,35 @@
+/* 상세 페이지 유튜브 플레이어 — 구조는 src/components/ProjectVideo.jsx
+   영상 ID 입력 위치: src/data/projects.js 의 video.youtubeId */
+
+/* [크기조정] 플레이어 비율. 16 / 9 가 유튜브 기본. 값을 바꾸면 높이가 달라짐 */
+.project-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: var(--border);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.project-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.project-video--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--color-surface),
+      var(--color-surface) 10px,
+      var(--color-surface-raised) 10px,
+      var(--color-surface-raised) 11px
+    );
+}

@@ -1,0 +1,78 @@
+/*
+  디자인 토큰
+  - 컬러: Black + Purple (지침 준수, 추가 액센트 컬러 사용하지 않음)
+  - 타입: Space Grotesk(Display) / Inter(Body) / IBM Plex Mono(System·Label)
+  - 형태: border-radius 0, gradient/glow/glassmorphism 사용 금지
+*/
+
+/*
+  ★ 사이트 전역 값(디자인 토큰) — 여기 한 곳만 바꾸면 모든 페이지에 반영됩니다. ★
+  [색상변경]  --color-* 의 HEX 값
+  [글자크기]  --fs-* 값 (clamp(최소, 유동, 최대))
+  [간격/여백] --space-* 값 (각 CSS 파일의 padding/margin/gap 이 이 토큰을 참조)
+  ※ 변수 이름 자체는 바꾸지 마세요(다른 파일이 참조 중). 값만 수정.
+*/
+
+:root {
+  /* ── 배경/면/선 색상 [색상변경] ── */
+  --color-bg: #0a0a0b;            /* 페이지 바탕 */
+  --color-surface: #131316;       /* 카드·프레임 바탕 */
+  --color-surface-raised: #1a1a1e;/* 살짝 떠 보이는 면 */
+  --color-line: #29292f;          /* 기본 테두리선 */
+  --color-line-strong: #3c3c44;   /* 강한 테두리선 */
+
+  /* ── 포인트 컬러(보라) [색상변경] ── */
+  --color-purple-500: #6e3aff;
+  --color-purple-400: #8a5bff;
+  --color-purple-700: #3d1f8f;
+  --color-purple-muted: #4a3a6e;
+
+  /* ── 글자 색상 [색상변경] ── */
+  --color-text-primary: #ededf0;   /* 본문 기본 */
+  --color-text-secondary: #a3a3ab; /* 보조 설명 */
+  --color-text-tertiary: #6c6c74;  /* 흐린 라벨 */
+
+  /* Type */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* [글자크기] 화면 폭에 따라 자동으로 커지고/작아짐: clamp(최소, 유동, 최대) */
+  --fs-hero: clamp(2.75rem, 6vw, 5.5rem);  /* 홈 히어로 대제목 */
+  --fs-h1: clamp(2rem, 4vw, 3.25rem);      /* 페이지 제목 */
+  --fs-h2: clamp(1.5rem, 2.4vw, 2rem);     /* 소제목 */
+  --fs-body: 1rem;                         /* 본문 */
+  --fs-small: 0.8125rem;                   /* 작은 텍스트 */
+  --fs-mono: 0.75rem;                      /* 시스템 라벨(고정폭) */
+
+  /* Layout */
+  --radius: 0px;
+  --border: 1px solid var(--color-line);
+  --border-strong: 1px solid var(--color-line-strong);
+
+  /* 이미지·영상 미첨부 자리표시에 쓰는 사선 패턴 (카드/갤러리/About 사진 공통) */
+  --hatch: repeating-linear-gradient(
+    45deg,
+    var(--color-surface),
+    var(--color-surface) 10px,
+    var(--color-surface-raised) 10px,
+    var(--color-surface-raised) 11px
+  );
+
+  /* [간격/여백] 숫자가 클수록 넓은 간격. 각 CSS 의 padding/margin/gap 이 이 값을 씀 */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+  --space-7: 9rem;
+
+  /* ★ 페이지 좌우 여백 공통값 — 전 페이지의 .container 가 사용 (적용부: global.css)
+     특정 블럭만 다르게 하려면 그 페이지 BLOCKS 의 padLeft/padRight 를 쓰세요. */
+  --page-max: 1280px;                   /* 본문 최대 폭 (넓은 화면은 양옆 자동 여백 + 가운데 정렬) */
+  --page-gutter: var(--space-3);        /* PC/태블릿 좌우 간격 */
+  --page-gutter-mobile: var(--space-2); /* 모바일(≤640px) 좌우 간격 */
+
+  --transition-base: 180ms ease;  /* 공통 전환 속도 */
+}

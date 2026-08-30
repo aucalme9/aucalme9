@@ -1,0 +1,47 @@
+/* About 페이지 — 구조는 src/pages/About.jsx / 문구는 src/i18n/strings.js (about.*)
+   두 블럭(intro / skills)의 여백·높이·순서는 About.jsx 의 BLOCKS. */
+
+.about--skills {
+  border-top: var(--border);   /* skills 블럭 위 구분선 */
+}
+
+.about__label {
+  display: block;
+  color: var(--color-purple-400);
+  margin-bottom: var(--space-3);
+}
+
+/* [크기조정] 소개 본문 줄폭 */
+.about__body {
+  max-width: 60ch;
+  color: var(--color-text-secondary);
+}
+
+/* [열 개수/간격] 1fr 1fr = 2단. 3단으로 하려면 1fr 1fr 1fr / gap = 칸 사이 간격 */
+.about__skills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.about__skills-label {
+  color: var(--color-purple-400);
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.about__skills-list li {
+  padding: var(--space-1) 0;
+  border-bottom: var(--border);
+}
+
+.about__skills-list--muted li {
+  color: var(--color-text-tertiary);
+}
+
+/* [반응형] 640px 이하(모바일) → 스킬 목록 1단 */
+@media (max-width: 640px) {
+  .about__skills {
+    grid-template-columns: 1fr;
+  }
+}

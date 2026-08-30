@@ -1,0 +1,113 @@
+/* 프로젝트 상세 — 블럭(header/media/body/graph) 여백·높이·순서는 ProjectDetail.jsx 의 BLOCKS,
+   페이지 바깥 상하 여백은 같은 파일의 PAGE_PAD. 여기에는 블럭 '안쪽' 배치만 둡니다. */
+
+/* 블럭별 좌/우 추가 여백 + 최대 가로 폭 (BLOCKS 의 padLeft/padRight/maxWidth). 기본 no-op. */
+.project-detail__header,
+.project-detail__media,
+.project-detail__sections,
+.project-detail__graph {
+  padding-left: var(--block-pad-left, 0);
+  padding-right: var(--block-pad-right, 0);
+  max-width: var(--block-max-width, none);
+}
+
+/* [여백조정] "← Projects" 뒤로가기 링크와 첫 블럭 사이 간격 */
+.project-detail__back {
+  display: inline-block;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.project-detail__back:hover {
+  color: var(--color-purple-400);
+}
+
+/* [여백조정] 헤더 내용 아래 구분선까지의 간격 (블럭 사이 간격은 BLOCKS.header.padBottom) */
+.project-detail__header {
+  border-bottom: var(--border);
+  padding-bottom: var(--space-4);
+}
+
+.project-detail__index {
+  color: var(--color-purple-400);
+}
+
+/* [크기조정] 제목 글자 크기(--fs-h1 토큰) / 번호와의 간격 */
+.project-detail__title {
+  font-size: var(--fs-h1);
+  margin-top: var(--space-1);
+}
+
+/* [크기조정] 부제 색·줄폭(max-width: 50ch = 약 50글자) */
+.project-detail__subtitle {
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+  max-width: 50ch;
+}
+
+/* [여백조정] 툴 태그 줄의 위 간격 / 태그 사이 간격(gap) */
+.project-detail__tools {
+  display: flex;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.project-detail__tools li {
+  border: 1px solid var(--color-purple-muted);
+  color: var(--color-purple-400);
+  padding: 2px 6px;
+}
+
+/* ── 미디어 블럭: 스틸컷 갤러리 + 유튜브 영상 (2단) ──────────────────
+   [위치/비율 조정] grid-template-columns 로 좌(갤러리):우(영상) 비율 조절.
+     예) 1.2fr 1fr = 갤러리를 조금 더 넓게 / 1fr 1fr = 반반 / 세로로 쌓으려면 1fr
+   [여백조정] gap = 두 칸 사이 간격
+   (블럭 위·아래 간격은 src/pages/ProjectDetail.jsx → BLOCKS.media) */
+.project-detail__media {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-3);
+}
+
+/* ── 본문 섹션 그리드 (좌: 라벨 / 우: 내용) ─────────────────────────
+   [위치조정] 200px = 좌측 라벨 칸 고정 폭. 숫자를 키우면 라벨 칸이 넓어짐.
+   [여백조정] gap: 세로간격 가로간격 순서 */
+.project-detail__sections {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--space-3) var(--space-5);
+}
+
+.project-detail__section {
+  display: contents; /* 각 section 이 위 그리드에 직접 배치되도록 함 (수정 불필요) */
+}
+
+.project-detail__section-label {
+  color: var(--color-purple-400);
+  padding-top: 2px;
+}
+
+/* [크기조정] 본문 줄폭(max-width: 70ch = 약 70글자) / 아래 구분선까지 간격 */
+.project-detail__section-body {
+  color: var(--color-text-secondary);
+  border-bottom: var(--border);
+  padding-bottom: var(--space-3);
+  max-width: 70ch;
+}
+
+/* ── 태블릿 이하: 미디어 2단 → 1단(세로로 쌓기) ─────────────────── */
+@media (max-width: 800px) {
+  .project-detail__media {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 모바일: 본문 그리드도 1단으로, 라벨 위 간격 확보 ───────────── */
+@media (max-width: 700px) {
+  .project-detail__sections {
+    grid-template-columns: 1fr;
+  }
+  .project-detail__section-label {
+    padding-top: var(--space-2);
+  }
+}

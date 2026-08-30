@@ -1,0 +1,64 @@
+/* 상단바(헤더) 스타일 — 구조는 src/components/Header.jsx */
+
+/* [레이아웃] 스크롤해도 상단에 고정(sticky). 반투명 배경. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(10, 10, 11, 0.92);
+  border-bottom: var(--border);
+}
+
+/* [좌우여백] 상단바 안쪽 정렬 폭도 .container 를 함께 써서 본문과 좌우가 맞음
+   (전역 좌우 여백: src/styles/tokens.css --page-gutter)
+   [크기조정] 상단바 높이 / [위치조정] 로고·메뉴·언어버튼을 양끝 정렬(space-between) */
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.site-header__logo {
+  letter-spacing: 0.12em;
+}
+
+/* [여백조정] 메뉴 항목 사이 간격 */
+.site-header__nav ul {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.site-header__link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.site-header__link:hover,
+.site-header__link.is-active {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-purple-400);
+}
+
+.site-header__lang {
+  color: var(--color-text-secondary);
+  letter-spacing: 0.1em;
+}
+
+.site-header__lang:hover {
+  color: var(--color-purple-400);
+}
+
+/* [반응형] 화면 폭 640px 이하(모바일)에서 메뉴 간격·로고 크기 축소 */
+@media (max-width: 640px) {
+  .site-header__nav ul {
+    gap: var(--space-2);
+  }
+  .site-header__logo {
+    font-size: 0.7rem;
+  }
+}

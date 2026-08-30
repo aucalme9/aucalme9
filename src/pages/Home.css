@@ -1,0 +1,82 @@
+/* Home — 최상단 히어로 + 인터랙티브 제너레이티브 배경(와이어프레임 등고선 지형).
+   'technical artist' 컨셉: 풀블리드 캔버스 위에 HUD 코너 프레임 + 좌측 히어로 패널 + 하단 상태 바.
+   ※ Featured / About / Contact 섹션은 이 페이지에서 제거됨. */
+
+.home {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  margin-top: -64px;              /* sticky 헤더(64px) 밑까지 캔버스가 차지 */
+}
+
+/* ── 히어로: 캔버스 위 겹침 ── */
+.home__hero {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 64px;             /* 콘텐츠는 헤더 아래에서 시작 */
+  pointer-events: none;          /* 빈 영역 클릭은 배경 캔버스/노브로 통과 */
+}
+
+/* Hero.jsx 의 .container 를 좌측 HUD 패널로 재구성 (전역 .container 규칙 위에 덮어씀) */
+.home__hero .container {
+  pointer-events: auto;
+  max-width: min(560px, 92vw);
+  margin: 0;
+  margin-left: clamp(1.25rem, 7vw, 7rem);
+  padding: var(--space-5) var(--space-4);
+  background: rgba(10, 10, 11, 0.62);
+  border: var(--border-strong);
+  border-left: 2px solid var(--color-purple-500);
+}
+
+/* Hero 내부 요소 톤 미세 조정 (히어로 자체 스타일은 src/components/Hero.css) */
+.home__hero .hero__desc { color: var(--color-text-secondary); }
+
+/* ── HUD 코너 프레임 ── */
+.home__frame {
+  position: absolute;
+  inset: var(--space-3);
+  z-index: 1;
+  pointer-events: none;
+}
+.home__corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid var(--color-line-strong);
+}
+.home__corner--tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
+.home__corner--tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
+.home__corner--bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+.home__corner--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* ── 하단 상태 바 ── */
+.home__status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-text-tertiary);
+  border-top: var(--border);
+  background: rgba(10, 10, 11, 0.7);
+  pointer-events: none;
+}
+.home__status span { white-space: nowrap; }
+
+@media (max-width: 640px) {
+  .home__hero .container {
+    margin-left: var(--space-2);
+    margin-right: var(--space-2);
+    padding: var(--space-4) var(--space-3);
+  }
+  .home__status { gap: var(--space-2); font-size: 0.62rem; }
+}

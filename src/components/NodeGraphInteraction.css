@@ -1,0 +1,99 @@
+/* 상세 페이지 노드 그래프 — 구조·노드 좌표는 src/components/NodeGraphInteraction.jsx */
+
+/* 그래프 블럭의 위·아래 바깥 여백은 src/pages/ProjectDetail.jsx → BLOCKS.graph 에서 조절 */
+.node-graph {
+  border: var(--border);
+  background: var(--color-surface);
+}
+
+/* [여백조정] 상단 라벨 안쪽 여백 */
+.node-graph__label {
+  padding: var(--space-2);
+  border-bottom: var(--border);
+}
+
+/* [크기조정] 그래프가 그려지는 영역 높이(px). 노드가 잘리면 이 값을 키우세요.
+   (JSX 의 노드 초기 y 좌표와 함께 조절) */
+.node-graph__field {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--color-line) 1px, transparent 1px) 0 0 / 100% 24px,
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px) 0 0 / 24px 100%,
+    var(--color-bg);
+  background-blend-mode: normal;
+  user-select: none;
+}
+
+.node-graph__field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 23px, var(--color-line) 23px, var(--color-line) 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, var(--color-line) 23px, var(--color-line) 24px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.node-graph__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* [크기조정] 노드 박스 폭(px). 바꾸면 JSX 의 140(드래그 범위·포트 위치 계산)도 같이 맞추세요. */
+.node-graph__node {
+  position: absolute;
+  width: 140px;
+  border: var(--border-strong);
+  background: var(--color-surface-raised);
+  cursor: grab;
+}
+
+.node-graph__node:active {
+  cursor: grabbing;
+  border-color: var(--color-purple-500);
+}
+
+.node-graph__node--source {
+  border-left: 2px solid var(--color-purple-400);
+}
+
+.node-graph__node--process {
+  border-left: 2px solid var(--color-purple-500);
+}
+
+.node-graph__node--output {
+  border-left: 2px solid var(--color-purple-700);
+}
+
+.node-graph__node-header {
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-text-primary);
+  border-bottom: var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-graph__port {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateY(-50%);
+  background: var(--color-purple-500);
+}
+
+.node-graph__port--in {
+  left: -5px;
+}
+
+.node-graph__port--out {
+  right: -5px;
+}

@@ -1,0 +1,113 @@
+/* TerrainField — 제너레이티브 배경 캔버스 + 우상단 슬라이더 HUD.
+   컨셉: 고대비 단색 등고선 / 보라 액센트 / 모서리 0. */
+
+.terrain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  background: var(--color-bg);
+}
+
+/* ── 우상단 HUD 패널 ── */
+.terrain-hud {
+  position: absolute;
+  top: calc(64px + var(--space-3));   /* sticky 헤더 아래 */
+  right: var(--space-4);
+  z-index: 6;
+  width: 208px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: rgba(10, 10, 11, 0.72);
+  border: var(--border-strong);
+  border-top: 2px solid var(--color-purple-500);
+}
+
+.terrain-hud__title {
+  color: var(--color-purple-400);
+  letter-spacing: 0.16em;
+}
+
+.terrain-hud__reset {
+  margin-top: 2px;
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-line-strong);
+  background: none;
+  cursor: pointer;
+  letter-spacing: 0.14em;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+.terrain-hud__reset:hover {
+  color: var(--color-purple-400);
+  border-color: var(--color-purple-500);
+}
+
+/* ── 가로 슬라이더 ── */
+.tslider {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.tslider__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.tslider__label {
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.12em;
+}
+.tslider__value {
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.tslider__track {
+  position: relative;
+  height: 14px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.tslider__track::before {                 /* 트랙 선 */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--color-line-strong);
+}
+.tslider__track:focus-visible {
+  outline: 1px solid var(--color-purple-400);
+  outline-offset: 3px;
+}
+.tslider__fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--color-purple-500);
+}
+.tslider__thumb {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 12px;
+  background: var(--color-purple-400);
+  transform: translate(-50%, -50%);       /* 모서리 0: 사각 썸 */
+}
+
+/* ── 좁은 화면: HUD 축소 ── */
+@media (max-width: 640px) {
+  .terrain-hud {
+    right: var(--space-2);
+    width: 168px;
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+}

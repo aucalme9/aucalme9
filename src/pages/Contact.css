@@ -1,0 +1,29 @@
+/* Contact 페이지 — 구조는 src/pages/Contact.jsx / 문구·이메일은 src/i18n/strings.js (contact.*)
+   여백·높이·순서는 Contact.jsx 의 BLOCKS.main. */
+.contact {
+  min-height: 40vh;   /* 화면 높이의 최소 40% (BLOCKS.main.minHeight 와 별개 하한) */
+}
+
+.contact__label {
+  display: block;
+  color: var(--color-purple-400);
+  margin-bottom: var(--space-3);
+}
+
+.contact__body {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+  max-width: 50ch;
+}
+
+/* [크기조정] 이메일 텍스트 크기 / 밑줄 색 */
+.contact__email {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  border-bottom: 1px solid var(--color-purple-500);
+  padding-bottom: 2px;
+}
+
+.contact__email:hover {
+  color: var(--color-purple-400);
+}
