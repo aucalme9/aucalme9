@@ -1,4 +1,4 @@
-// 상세 페이지 하단(BLOCKS.graph)에 들어가는 TouchDesigner 스타일 노드 그래프.
+// 상세 페이지 04 SYSTEM ARCHITECTURE 와 05 PROCESS 사이에 들어가는 TouchDesigner 스타일 노드 그래프.
 //  마우스로 노드를 드래그해 옮길 수 있는 장식용 인터랙션 요소입니다.
 //  [레이아웃조정] 그래프 높이·격자·노드 박스 모양은 src/components/NodeGraphInteraction.css
 import { useState, useRef, useCallback } from 'react'

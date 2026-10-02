@@ -37,6 +37,10 @@ const STEP = 360 / projects.length             // 카드 사이 각도(6개 → 
 const REDUCED = typeof window !== 'undefined'
   && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
+// ── 목록 필터 카테고리 (라벨은 src/i18n/strings.js → filters.*) ─────────
+//  'all' = 전체. 나머지는 projects.js 의 category 값과 일치해야 함.
+const FILTER_KEYS = ['all', 'media-art', 'generative', 'interactive', '3d', 'audio-reactive', 'experiment', 'other']
+
 function OrbitCardImage({ src }) {
   // 카드 전체 커버 이미지. 없거나 깨지면 사선 패턴으로 대체 (다른 카드와 동일 규칙).
   const [err, setErr] = useState(false)
@@ -55,6 +59,11 @@ function OrbitCardImage({ src }) {
 export default function ProjectsList() {
   const { lang } = useLanguage()
   const navigate = useNavigate()
+
+  const [filter, setFilter] = useState('all')       // 활성 카테고리 필터
+  const filterRef = useRef('all')                    // rAF 루프가 리렌더 없이 읽는 최신 필터값
+  filterRef.current = filter
+  const isOut = (p) => filterRef.current !== 'all' && p.category !== filterRef.current
 
   const orbitRef = useRef(null)
   const worldRef = useRef(null)
@@ -90,7 +99,8 @@ export default function ProjectsList() {
         dists[i] = d
         const el = cardRefs.current[i]
         if (el) {
-          el.style.opacity = String(Math.max(0, Math.min(1, 1 - (d - 50) / 55)))
+          const ringOpacity = Math.max(0, Math.min(1, 1 - (d - 50) / 55))
+          el.style.opacity = String(isOut(projects[i]) ? Math.min(ringOpacity, 0.08) : ringOpacity)
           el.style.zIndex = String(Math.round(1000 - d))
         }
       }
@@ -103,6 +113,7 @@ export default function ProjectsList() {
       if (pointer.current.inside) {
         for (let i = 0; i < cardRefs.current.length; i++) {
           if (dists[i] > 95) continue                           // 뒤쪽(안 보이는) 카드 스킵
+          if (isOut(projects[i])) continue                      // 필터에서 제외된 카드 스킵
           const el = cardRefs.current[i]
           if (!el) continue
           const r = el.getBoundingClientRect()
@@ -214,6 +225,23 @@ export default function ProjectsList() {
           onMouseLeave={onStageLeave}
           onClick={onStageClick}
         >
+          {/* ── 카테고리 필터 (좌상단 오버레이) — 라벨은 strings.js → filters.* ──
+              선택한 카테고리 외 카드는 링에서 흐려지고 호버·클릭에서 제외됩니다. */}
+          <div className="orbit__filters sys-label" role="tablist" aria-label="Category filter">
+            {FILTER_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={filter === key}
+                className={'orbit__filter' + (filter === key ? ' is-active' : '')}
+                onClick={(e) => { e.stopPropagation(); setFilter(key) }}
+              >
+                {(strings.filters[key] || strings.filters.other)[lang]}
+              </button>
+            ))}
+          </div>
+
           <div className="orbit__world" ref={worldRef}>
             <div className="orbit__grid orbit__grid--floor" />
             <div className="orbit__grid orbit__grid--ceil" />
@@ -236,6 +264,10 @@ export default function ProjectsList() {
                   <span className="orbit__card-index sys-label">P.{p.index}</span>
                   <span className="orbit__card-title">{p.title[lang]}</span>
                   <span className="orbit__card-sub">{p.subtitle[lang]}</span>
+                  {/* 카드 메타: YEAR / TYPE / TOOLS / ROLE (내용은 projects.js) */}
+                  <span className="orbit__card-meta sys-label">
+                    {p.year} · {(strings.filters[p.category] || strings.filters.other)[lang]} · {p.tools.join(', ')} · {p.role[lang]}
+                  </span>
                 </div>
               </Link>
             ))}
@@ -262,11 +294,23 @@ export default function ProjectsList() {
           <span className="orbit__hint sys-label">CLICK · DRAG TO LOOK AROUND</span>
         </div>
 
-        {/* ── 폴백: 포인터 없음/좁은 화면 → 기존 카드 그리드 ── */}
+        {/* ── 폴백: 포인터 없음/좁은 화면 → 기존 카드 그리드 (필터 동일 적용) ── */}
         <div className="projects-list__fallback container">
           <h1 className="sys-label projects-list__label">{strings.nav.projects[lang]}</h1>
+          <div className="projects-list__filters sys-label">
+            {FILTER_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                className={'projects-list__filter' + (filter === key ? ' is-active' : '')}
+                onClick={() => setFilter(key)}
+              >
+                {(strings.filters[key] || strings.filters.other)[lang]}
+              </button>
+            ))}
+          </div>
           <div className="projects-list__grid">
-            {projects.map((p) => (
+            {projects.filter((p) => filter === 'all' || p.category === filter).map((p) => (
               <ProjectCard key={p.id} project={p} />
             ))}
           </div>

@@ -1,11 +1,11 @@
-/* 프로젝트 상세 — 블럭(header/media/body/graph) 여백·높이·순서는 ProjectDetail.jsx 의 BLOCKS,
+/* 프로젝트 상세 — 블럭(header/media/body/next) 여백·높이·순서는 ProjectDetail.jsx 의 BLOCKS,
    페이지 바깥 상하 여백은 같은 파일의 PAGE_PAD. 여기에는 블럭 '안쪽' 배치만 둡니다. */
 
 /* 블럭별 좌/우 추가 여백 + 최대 가로 폭 (BLOCKS 의 padLeft/padRight/maxWidth). 기본 no-op. */
 .project-detail__header,
 .project-detail__media,
-.project-detail__sections,
-.project-detail__graph {
+.project-detail__body,
+.project-detail__next {
   padding-left: var(--block-pad-left, 0);
   padding-right: var(--block-pad-right, 0);
   max-width: var(--block-max-width, none);
@@ -45,9 +45,19 @@
   max-width: 50ch;
 }
 
+/* [여백조정] 연도·카테고리 메타 줄 */
+.project-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-2);
+  color: var(--color-text-tertiary);
+}
+
 /* [여백조정] 툴 태그 줄의 위 간격 / 태그 사이 간격(gap) */
 .project-detail__tools {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-1);
   margin-top: var(--space-2);
 }
@@ -69,7 +79,14 @@
   gap: var(--space-3);
 }
 
-/* ── 본문 섹션 그리드 (좌: 라벨 / 우: 내용) ─────────────────────────
+/* ── 10단계 본문 컨테이너 (섹션 그리드 + 노드그래프 사이 간격) ─────── */
+.project-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── 본문 섹션 그리드 (좌: 번호·라벨 / 우: 내용) ────────────────────
    [위치조정] 200px = 좌측 라벨 칸 고정 폭. 숫자를 키우면 라벨 칸이 넓어짐.
    [여백조정] gap: 세로간격 가로간격 순서 */
 .project-detail__sections {
@@ -83,8 +100,17 @@
 }
 
 .project-detail__section-label {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
   color: var(--color-purple-400);
   padding-top: 2px;
+}
+
+/* 섹션 번호 (01 / 02 …) — technical documentation 톤 */
+.project-detail__section-n {
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
 }
 
 /* [크기조정] 본문 줄폭(max-width: 70ch = 약 70글자) / 아래 구분선까지 간격 */
@@ -93,6 +119,76 @@
   border-bottom: var(--border);
   padding-bottom: var(--space-3);
   max-width: 70ch;
+}
+
+/* 09 TOOLS — 태그 목록 */
+.project-detail__tool-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-content: flex-start;
+  border-bottom: var(--border);
+  padding-bottom: var(--space-3);
+}
+.project-detail__tool-list li {
+  border: 1px solid var(--color-purple-muted);
+  color: var(--color-purple-400);
+  padding: 2px 6px;
+}
+
+/* 10 LEARNING — 4개 하위 항목 (What I learned / didn't work / changed / Next step) */
+.project-detail__section--learning .project-detail__learning {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.project-detail__learning-label {
+  display: block;
+  color: var(--color-purple-400);
+  margin-bottom: var(--space-1);
+}
+.project-detail__learning-row:last-child .project-detail__section-body {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* ── 노드 그래프 (시스템 구조 시각화) — SYSTEM ARCHITECTURE 와 PROCESS 사이 ── */
+.project-detail__graph {
+  margin: 0;
+  padding-left: var(--block-pad-left, 0);
+  padding-right: var(--block-pad-right, 0);
+}
+.project-detail__graph-cap {
+  display: block;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+/* ── 다음 프로젝트 연결 블럭 ─────────────────────────────────────── */
+.project-detail__next {
+  border-top: var(--border);
+  padding-top: var(--space-4);
+}
+.project-detail__next-label {
+  display: block;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-2);
+}
+.project-detail__next-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: var(--color-text-primary);
+  transition: color var(--transition-base);
+}
+.project-detail__next-link:hover {
+  color: var(--color-purple-400);
+}
+.project-detail__next-title {
+  font-size: var(--fs-h2, 1.5rem);
+}
+.project-detail__next-sub {
+  color: var(--color-text-tertiary);
 }
 
 /* ── 태블릿 이하: 미디어 2단 → 1단(세로로 쌓기) ─────────────────── */

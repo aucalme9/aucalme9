@@ -27,3 +27,29 @@
 .contact__email:hover {
   color: var(--color-purple-400);
 }
+
+/* SOCIAL / PORTFOLIO·VIDEO 링크 목록 */
+.contact__links-label {
+  display: block;
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
+}
+.contact__links {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border);
+}
+.contact__link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border);
+  color: var(--color-text-primary);
+  transition: color var(--transition-base);
+}
+.contact__link:hover { color: var(--color-purple-400); }
+.contact__link-href { color: var(--color-text-tertiary); }
+

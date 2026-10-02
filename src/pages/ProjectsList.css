@@ -132,6 +132,39 @@
   color: var(--color-text-secondary);
   font-size: var(--fs-small);
 }
+/* 카드 메타 (YEAR / TYPE / TOOLS / ROLE) */
+.orbit__card-meta {
+  margin-top: var(--space-1);
+  color: var(--color-text-tertiary);
+  font-size: 0.6rem;
+  line-height: 1.5;
+}
+
+/* ── 카테고리 필터 (좌상단 오버레이) ── */
+.orbit__filters {
+  position: absolute;
+  left: var(--space-4);
+  top: calc(64px + var(--space-3));
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  max-width: min(420px, 60vw);
+}
+.orbit__filter {
+  padding: 3px 8px;
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-line-strong);
+  background: rgba(10, 10, 11, 0.72);
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+.orbit__filter:hover { color: var(--color-purple-400); }
+.orbit__filter.is-active {
+  color: var(--color-purple-400);
+  border-color: var(--color-purple-500);
+}
 
 /* ── 하단 각도 룰러 (카메라 시선 각도에 배치된 프로젝트 넘버) ── */
 .orbit__ruler {
@@ -206,6 +239,28 @@
   display: block;
   color: var(--color-purple-400);
   margin-bottom: var(--space-3);
+}
+
+/* 폴백 그리드용 필터 줄 */
+.projects-list__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+.projects-list__filter {
+  padding: 3px 8px;
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-line-strong);
+  background: none;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+.projects-list__filter:hover { color: var(--color-purple-400); }
+.projects-list__filter.is-active {
+  color: var(--color-purple-400);
+  border-color: var(--color-purple-500);
 }
 
 .projects-list__grid {

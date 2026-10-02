@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
+import { strings } from '../i18n/strings'
 import './ProjectCard.css'
 
 export default function ProjectCard({ project }) {
@@ -35,6 +36,11 @@ export default function ProjectCard({ project }) {
       <div className="project-card__body">
         <h3 className="project-card__title">{project.title[lang]}</h3>
         <p className="project-card__subtitle">{project.subtitle[lang]}</p>
+        {/* 메타: YEAR / TYPE / ROLE (내용은 projects.js) */}
+        <p className="project-card__meta sys-label">
+          {project.year} · {(strings.filters[project.category] || strings.filters.other)[lang]}
+          {project.role?.[lang] ? ` · ${project.role[lang]}` : ''}
+        </p>
         <ul className="project-card__tools sys-label">
           {project.tools.map((tool) => (
             <li key={tool}>{tool}</li>

@@ -67,6 +67,14 @@
 .project-card__subtitle {
   color: var(--color-text-secondary);
   font-size: var(--fs-small);
+  margin-bottom: var(--space-1);
+}
+
+/* 메타 줄: YEAR / TYPE / ROLE */
+.project-card__meta {
+  color: var(--color-text-tertiary);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
   margin-bottom: var(--space-2);
 }
 

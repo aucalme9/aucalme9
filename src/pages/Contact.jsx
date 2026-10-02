@@ -20,11 +20,23 @@ export default function Contact() {
           {/* [내용수정] 제목·안내 문단은 strings.js → contact.label / contact.body */}
           <h1 className="sys-label contact__label">{strings.contact.label[lang]}</h1>
           <p className="contact__body">{strings.contact.body[lang]}</p>
-          {/* [내용수정] 이메일 주소는 strings.js → contact.email (화면 표시 + mailto 링크에 함께 사용)
-              [연락처 추가] 인스타/링크드인 등을 넣으려면 이 <a> 아래에 링크를 더 추가 */}
+          {/* [내용수정] 이메일 주소는 strings.js → contact.email (화면 표시 + mailto 링크에 함께 사용) */}
           <a className="contact__email" href={`mailto:${strings.contact.email}`}>
             {strings.contact.email}
           </a>
+
+          {/* SOCIAL / PORTFOLIO·VIDEO 링크 — 항목·주소는 strings.js → contact.links[] */}
+          <h2 className="sys-label contact__links-label">{strings.contact.linksLabel[lang]}</h2>
+          <ul className="contact__links">
+            {strings.contact.links.map((l) => (
+              <li key={l.label}>
+                <a className="contact__link" href={l.href} target="_blank" rel="noopener noreferrer">
+                  {l.label}
+                  <span className="sys-label contact__link-href">{l.href}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </div>
