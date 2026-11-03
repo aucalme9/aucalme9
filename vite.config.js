@@ -6,5 +6,5 @@ import react from '@vitejs/plugin-react'
 // 커스텀 도메인을 사용할 경우 base: '/' 로 변경하세요.
 export default defineConfig({
   plugins: [react()],
-  base: '/portfolio/',
+  base: '/aucalme9/',
 })
