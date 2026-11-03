@@ -135,6 +135,73 @@ export const strings = {
     back: { ko: '← Projects', en: '← Projects' },
   },
 
+  // ── 프로젝트 상세 상단 '맵핑 미리보기' (3D 뷰어 + 카드) [내용수정] ────────
+  //    모드별 실제 스펙 값(해상도·출력 등)은 projects.js → mapping.specs 에서 프로젝트마다 입력.
+  //    여기는 공통 라벨과 표면 종류 설명입니다.
+  mapping: {
+    label: { ko: 'MAPPING PREVIEW', en: 'MAPPING PREVIEW' },
+    hint: { ko: '드래그 · 회전  /  + − · 확대·축소', en: 'DRAG · ORBIT  /  + − · ZOOM' },
+    reset: { ko: '시점 초기화', en: 'Reset view' },
+    zoomIn: { ko: '확대', en: 'Zoom in' },
+    zoomOut: { ko: '축소', en: 'Zoom out' },
+    noWebgl: { ko: 'NO_SIGNAL — 이 브라우저에서는 3D 미리보기를 표시할 수 없습니다', en: 'NO_SIGNAL — 3D PREVIEW UNAVAILABLE IN THIS BROWSER' },
+    sourceTest: { ko: 'SOURCE · TEST PATTERN', en: 'SOURCE · TEST PATTERN' },
+    sourceMedia: { ko: 'SOURCE · PROJECT MEDIA', en: 'SOURCE · PROJECT MEDIA' },
+    // 하단 카드 제목
+    cards: {
+      surface: { ko: 'SURFACE', en: 'SURFACE' },
+      resolution: { ko: 'RESOLUTION', en: 'RESOLUTION' },
+      output: { ko: 'OUTPUT', en: 'OUTPUT' },
+      pixelMap: { ko: 'PIXEL MAP', en: 'PIXEL MAP' },
+      outputs: { ko: 'OUTPUTS', en: 'OUTPUTS' },
+      pitch: { ko: 'PIXEL PITCH / LUMEN', en: 'PIXEL PITCH / LUMEN' },
+      fps: { ko: 'FRAME RATE', en: 'FRAME RATE' },
+      chain: { ko: 'SIGNAL CHAIN', en: 'SIGNAL CHAIN' },
+    },
+    // 표면 3종 — 탭 이름 / 설명 / 고정 정보(미리보기 모델 기준)
+    modes: {
+      split: {
+        tab: { ko: '분할 디스플레이', en: 'SPLIT DISPLAY' },
+        name: { ko: 'Split LED Wall', en: 'Split LED Wall' },
+        desc: {
+          ko: '무대 백월 LED 4×2 패널과 좌우 세로 스크린. 한 장의 콘텐츠를 10개 화면으로 나눠 출력합니다.',
+          en: 'A 4×2 LED back wall with two portrait side screens. One canvas is sliced across ten surfaces.',
+        },
+        facts: [
+          { k: 'SURFACES', v: '10' },
+          { k: 'LAYOUT', v: 'L + 4×2 + R' },
+          { k: 'SCALE', v: '14.8 × 3.2 m' },
+        ],
+      },
+      dome: {
+        tab: { ko: '반구형 디스플레이', en: 'SPHERICAL DISPLAY' },
+        name: { ko: 'Spherical Display', en: 'Spherical Display' },
+        desc: {
+          ko: '바깥 면 전체가 화면인 구형 구조물. 360° equirect 콘텐츠를 둘레를 따라 감싸 출력합니다.',
+          en: 'A sphere whose entire exterior is a screen. 360° equirectangular content wraps around its surface.',
+        },
+        facts: [
+          { k: 'SURFACES', v: '1' },
+          { k: 'PROJECTION', v: 'EQUIRECT 360°' },
+          { k: 'DIAMETER', v: '13 m' },
+        ],
+      },
+      walls: {
+        tab: { ko: '3면 벽 맵핑', en: '3-WALL ROOM' },
+        name: { ko: 'Three-Wall Room', en: 'Three-Wall Room' },
+        desc: {
+          ko: '정면과 좌·우 벽이 이어지는 몰입형 룸. 펼친 와이드 콘텐츠가 세 벽을 따라 끊김 없이 이어집니다.',
+          en: 'An immersive room of front and side walls. One unfolded wide canvas runs seamlessly across all three.',
+        },
+        facts: [
+          { k: 'SURFACES', v: '3' },
+          { k: 'LAYOUT', v: 'L + F + R' },
+          { k: 'UNFOLDED', v: '30 × 4.5 m' },
+        ],
+      },
+    },
+  },
+
   // ── 페이지 하단 푸터 문구 [내용수정] (연도는 자동 계산) ──────────────
   footer: {
     rights: { ko: '개인 포트폴리오 사이트', en: 'Personal Portfolio Site' },

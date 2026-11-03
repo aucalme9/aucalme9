@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { strings } from '../i18n/strings'
 import './ProjectCard.css'
+import { asset } from '../utils/asset'
 
 export default function ProjectCard({ project }) {
   const { lang } = useLanguage()
@@ -19,7 +20,7 @@ export default function ProjectCard({ project }) {
       <div className="project-card__frame">
         {!imgError ? (
           <img
-            src={project.cover}
+            src={asset(project.cover)}
             alt={project.title[lang]}
             onError={() => setImgError(true)}         /* 로드 실패 시 NO_SIGNAL 표시 */
             loading="lazy"

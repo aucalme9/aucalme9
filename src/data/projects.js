@@ -46,6 +46,23 @@ const LEARNING_PLACEHOLDER = () => ({
   next:      { ko: '[Next step — 다음 단계로 이어질 지점 placeholder]', en: '[Next step placeholder]' },
 })
 
+// 상세 상단 '맵핑 미리보기' 데이터 (3D 뷰어 + 하단 카드) — 프로젝트마다 mapping: MAPPING_PLACEHOLDER() 로 시작
+//  [미디어첨부] media : 3D 표면에 씌울 영상/이미지 경로. 비우면 제너레이티브 테스트 패턴 재생.
+//               예) '/assets/projects/project-01/result/mapping.mp4'  (가로 2:1 비율 권장, 음소거 자동재생)
+//               ※ 유튜브 링크는 3D 표면에 씌울 수 없음 → mp4/webm/jpg/png 파일로.
+//  [분류값]     modes : 보여줄 표면과 순서. 'split'(분할) / 'dome'(반구형) / 'walls'(3면 벽). 첫 번째가 기본 탭.
+//  [내용수정]   specs.<mode> : 카드에 표시되는 실제 스펙 값 (지금은 예시값 placeholder)
+const MAPPING_PLACEHOLDER = (overrides = {}) => ({
+  media: '',
+  modes: ['split', 'dome', 'walls'],
+  specs: {
+    split: { resolution: '[7680 × 2160]', pitch: '[P2.6]', fps: '[60 fps]', outputs: '[10]', chain: '[TouchDesigner → Media Server → LED Processor]' },
+    dome:  { resolution: '[16384 × 8192]', pitch: '[P3.9]', fps: '[60 fps]', outputs: '[16]', chain: '[TouchDesigner → Equirect Render → Node Cluster]' },
+    walls: { resolution: '[11520 × 1728]', pitch: '[3× 20K lm]', fps: '[30 fps]', outputs: '[3]', chain: '[TouchDesigner → Warp / Blend → 3× Projector]' },
+  },
+  ...overrides,
+})
+
 export const projects = [
   // ┌─────────────────────────────────────────────────────────────────────┐
   // │ 프로젝트 01 — 아래 블록이 나머지 프로젝트의 작성 템플릿입니다.       │
@@ -70,6 +87,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID 11자리만. 비우면 영상 영역 숨김 처리(NO_SIGNAL)
+    mapping: MAPPING_PLACEHOLDER(), // [미디어첨부][내용수정] 상단 맵핑 미리보기 (위 MAPPING_PLACEHOLDER 설명 참고)
     fields: {                // [내용수정] 상세 페이지 본문. ko·en 각각 작성. (10단계 매핑은 위 주석 참조)
       overview:            { ko: '[Overview — 무엇을 만들었는지 한 줄 요약 placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept — 출발점이 된 아이디어/문제의식 placeholder]', en: '[Concept placeholder]' },
@@ -103,6 +121,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID
+    mapping: MAPPING_PLACEHOLDER(), // 상단 맵핑 미리보기
     fields: {                // [내용수정] 상세 본문
       overview:            { ko: '[Overview placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept placeholder]', en: '[Concept placeholder]' },
@@ -136,6 +155,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID
+    mapping: MAPPING_PLACEHOLDER(), // 상단 맵핑 미리보기
     fields: {                // [내용수정] 상세 본문
       overview:            { ko: '[Overview placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept placeholder]', en: '[Concept placeholder]' },
@@ -169,6 +189,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID
+    mapping: MAPPING_PLACEHOLDER(), // 상단 맵핑 미리보기
     fields: {                // [내용수정] 상세 본문
       overview:            { ko: '[Overview placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept placeholder]', en: '[Concept placeholder]' },
@@ -202,6 +223,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID
+    mapping: MAPPING_PLACEHOLDER(), // 상단 맵핑 미리보기
     fields: {                // [내용수정] 상세 본문
       overview:            { ko: '[Overview placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept placeholder]', en: '[Concept placeholder]' },
@@ -235,6 +257,7 @@ export const projects = [
       '/assets/projects/project-01/cover/still-02.jpg',
     ],
     video: { youtubeId: '' }, // [미디어첨부] 유튜브 ID
+    mapping: MAPPING_PLACEHOLDER(), // 상단 맵핑 미리보기
     fields: {                // [내용수정] 상세 본문
       overview:            { ko: '[Overview placeholder]', en: '[Overview placeholder]' },
       concept:             { ko: '[Concept placeholder]', en: '[Concept placeholder]' },

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { strings } from '../i18n/strings'
@@ -8,12 +9,17 @@ import NodeGraphInteraction from '../components/NodeGraphInteraction'
 import { blockStyle } from '../utils/layout'
 import './ProjectDetail.css'
 
+// 3D 맵핑 미리보기 — three.js 가 무거워서 상세 페이지에 들어올 때만 따로 불러옴
+const MappingStage = lazy(() => import('../components/MappingStage'))
+
 // 섹션(블럭) 레이아웃 설정 — 프로젝트 상세  (항목별 설명은 src/utils/layout.js 참고)
-//  순서: 10 header / 20 media / 30 body(10단계 본문) / 40 next(다음 프로젝트) — order 숫자로 재배치.
+//  순서: 10 header / 15 mapping(3D 맵핑 미리보기) / 20 media / 30 body(10단계 본문) / 40 next(다음 프로젝트)
+//        — order 숫자로 재배치.
 //  (뒤로가기 링크는 항상 맨 위 고정. 이 페이지 블럭들은 공통 .container 안이라
 //   padLeft/padRight 는 '추가 들여쓰기', maxWidth 는 '더 좁게'만 됩니다.)
 const BLOCKS = {
-  header: { order: 10, minHeight: 0, padTop: 0, padBottom: 4 },
+  header:  { order: 10, minHeight: 0, padTop: 0, padBottom: 4 },
+  mapping: { order: 15, minHeight: 0, padTop: 0, padBottom: 4 },
   media:  { order: 20, minHeight: 0, padTop: 0, padBottom: 4 },
   body:   { order: 30, minHeight: 0, padTop: 0, padBottom: 0 },
   next:   { order: 40, minHeight: 0, padTop: 4, padBottom: 0 },
@@ -92,6 +98,18 @@ export default function ProjectDetail() {
               ))}
             </ul>
           </header>
+
+          {/* 블럭: 맵핑 미리보기 (3D 뷰어 — 분할 / 반구형 / 3면 벽 + 스펙 카드 4장)
+              [내용수정] 프로젝트별 값 = projects.js 의 mapping / 라벨 = strings.js 의 mapping
+              [레이아웃조정] src/components/MappingStage.css
+              [숨기기] projects.js 에서 해당 프로젝트의 mapping 줄을 지우면 이 블럭이 사라집니다. */}
+          {project.mapping && (
+            <div className="project-detail__mapping" style={blockStyle(BLOCKS.mapping)}>
+              <Suspense fallback={<div className="project-detail__mapping-loading sys-label">LOADING MAPPING PREVIEW…</div>}>
+                <MappingStage project={project} lang={lang} />
+              </Suspense>
+            </div>
+          )}
 
           {/* 블럭: 미디어 (스틸컷 갤러리 + 유튜브 영상) — 01 OVERVIEW 상단
               [미디어첨부] 이미지 = projects.js 의 gallery[] / 영상 = projects.js 의 video.youtubeId

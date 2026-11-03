@@ -4,6 +4,7 @@
 //                 src/components/ProjectGallery.css (.project-gallery__frame / __nav / __counter)
 import { useState } from 'react'
 import './ProjectGallery.css'
+import { asset } from '../utils/asset'
 
 export default function ProjectGallery({ images = [], title = '' }) {
   const [index, setIndex] = useState(0)      // 현재 보이는 스틸컷 번호
@@ -23,7 +24,7 @@ export default function ProjectGallery({ images = [], title = '' }) {
       <div className="project-gallery__frame">
         {!errored[index] ? (
           <img
-            src={images[index]}
+            src={asset(images[index])}
             alt={`${title} still ${index + 1}`}
             onError={() => setErrored((p) => ({ ...p, [index]: true }))}
           />

@@ -6,6 +6,7 @@ import { projects } from '../data/projects'
 import ProjectCard from '../components/ProjectCard'
 import { blockStyle } from '../utils/layout'
 import './ProjectsList.css'
+import { asset } from '../utils/asset'
 
 // 섹션(블럭) 레이아웃 — Projects  (항목별 설명은 src/utils/layout.js)
 //  3D 오빗 네비게이터라 화면을 꽉 채움.
@@ -48,7 +49,7 @@ function OrbitCardImage({ src }) {
   return (
     <img
       className="orbit__card-img"
-      src={src}
+      src={asset(src)}
       alt=""
       loading="lazy"
       onError={() => setErr(true)}

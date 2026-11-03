@@ -3,6 +3,7 @@
 
 /* 블럭별 좌/우 추가 여백 + 최대 가로 폭 (BLOCKS 의 padLeft/padRight/maxWidth). 기본 no-op. */
 .project-detail__header,
+.project-detail__mapping,
 .project-detail__media,
 .project-detail__body,
 .project-detail__next {
@@ -66,6 +67,16 @@
   border: 1px solid var(--color-purple-muted);
   color: var(--color-purple-400);
   padding: 2px 6px;
+}
+
+/* ── 맵핑 미리보기 블럭 (안쪽 구성은 src/components/MappingStage.css) ── */
+.project-detail__mapping-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(380px, 64vh, 720px);
+  border: var(--border);
+  background: var(--hatch);
 }
 
 /* ── 미디어 블럭: 스틸컷 갤러리 + 유튜브 영상 (2단) ──────────────────
