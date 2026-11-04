@@ -115,10 +115,10 @@ export const strings = {
   // ── 프로젝트 상세 페이지의 섹션 제목 [내용수정] ─────────────
   //    각 프로젝트 본문 내용은 여기가 아니라 src/data/projects.js 에서 입력합니다.
   project: {
-    overview: { ko: 'Overview', en: 'Overview' },
-    keyWork: { ko: 'Key Work', en: 'Key Work' },                 // 주요 작업
-    experiments: { ko: 'Key Experiments', en: 'Key Experiments' }, // 주요 실험
-    structure: { ko: 'System Structure', en: 'System Structure' }, // 구현 구조
+    overview: { ko: '핵심 내용', en: 'Overview' },
+    keyWork: { ko: '주요 작업', en: 'Key Work' },
+    experiments: { ko: '주요 실험', en: 'Key Experiments' },
+    structure: { ko: '주요 구현 구조', en: 'System Structure' },
     concept: { ko: 'Concept', en: 'Concept' },
     systemFlow: { ko: 'System Flow', en: 'System Flow' },
     systemArchitecture: { ko: 'System Architecture', en: 'System Architecture' },

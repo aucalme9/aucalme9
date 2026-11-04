@@ -13,15 +13,16 @@ import './ProjectDetail.css'
 const MappingStage = lazy(() => import('../components/MappingStage'))
 
 // 섹션(블럭) 레이아웃 설정 — 프로젝트 상세  (항목별 설명은 src/utils/layout.js 참고)
-//  순서: 10 header / 15 mapping(3D 맵핑 미리보기) / 20 media / 30 body(본문) / 40 next(다음 프로젝트)
+//  순서: 10 header / 15 mapping(3D 맵핑 미리보기) / 20 body(본문: 핵심 내용·주요 작업…)
+//        / 30 media(스틸컷·영상) / 40 next(다음 프로젝트)
 //        — order 숫자로 재배치.
 //  (뒤로가기 링크는 항상 맨 위 고정. 이 페이지 블럭들은 공통 .container 안이라
 //   padLeft/padRight 는 '추가 들여쓰기', maxWidth 는 '더 좁게'만 됩니다.)
 const BLOCKS = {
   header:  { order: 10, minHeight: 0, padTop: 0, padBottom: 4 },
   mapping: { order: 15, minHeight: 0, padTop: 0, padBottom: 4 },
-  media:   { order: 20, minHeight: 0, padTop: 0, padBottom: 4 },
-  body:    { order: 30, minHeight: 0, padTop: 0, padBottom: 0 },
+  body:    { order: 20, minHeight: 0, padTop: 0, padBottom: 4 },
+  media:   { order: 30, minHeight: 0, padTop: 0, padBottom: 0 },
   next:    { order: 40, minHeight: 0, padTop: 4, padBottom: 0 },
 }
 

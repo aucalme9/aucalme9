@@ -35,6 +35,9 @@ const CARD_H = 360 * (CARD_SIZE / 50)
 const RING_X = (RING_POS_X - 50) * 10          // px, 50=0
 const RING_Y = (RING_POS_Y - 50) * 10
 const STEP = 360 / projects.length             // 카드 사이 각도(7개 → 약 51°)
+// [순서 방향] -1 = 왼쪽으로 스와이프(오른쪽→왼쪽 드래그)하면 01 → 02 → 03 … 순서(시계방향)로 넘어감.
+//             1 로 바꾸면 반대 방향(01 → 07 → 06 …).
+const DIR = -1
 const REDUCED = typeof window !== 'undefined'
   && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -95,7 +98,7 @@ export default function ProjectsList() {
       // 카드별 각도 → opacity / z-index + 각 카드의 정면 거리 저장
       const dists = []
       for (let i = 0; i < cardRefs.current.length; i++) {
-        const a = (((i * STEP + h) % 360) + 360) % 360
+        const a = (((DIR * i * STEP + h) % 360) + 360) % 360
         const d = Math.min(a, 360 - a)                          // 0 = 정면
         dists[i] = d
         const el = cardRefs.current[i]
@@ -144,11 +147,12 @@ export default function ProjectsList() {
       if (rulerRef.current) {
         const hw = ((h % 360) + 360) % 360
         const hc = hw > 180 ? hw - 360 : hw
-        rulerRef.current.style.transform = `translateX(${hc * RULER_PX_PER_DEG}px)`
+        // 카드와 같은 방향으로 흐르도록 (오른쪽 카드 번호가 룰러에서도 오른쪽)
+        rulerRef.current.style.transform = `translateX(${DIR * hc * RULER_PX_PER_DEG}px)`
       }
 
       // 정면(카메라 시선)에 온 카드 번호 → 중앙 컬러 숫자
-      const idx = ((Math.round(-h / STEP) % projects.length) + projects.length) % projects.length
+      const idx = ((Math.round((-DIR * h) / STEP) % projects.length) + projects.length) % projects.length
       const num = projects[idx].index
       if (readoutRef.current && readoutRef.current.textContent !== num) {
         readoutRef.current.textContent = num
@@ -257,7 +261,7 @@ export default function ProjectsList() {
                 ref={(el) => { cardRefs.current[i] = el }}
                 to={`/projects/${p.slug}`}
                 className="orbit__card"
-                style={{ '--card-t': `rotateY(${i * STEP}deg) translateZ(${-RADIUS}px)` }}
+                style={{ '--card-t': `rotateY(${DIR * i * STEP}deg) translateZ(${-RADIUS}px)` }}
                 aria-label={p.title[lang] || `Project ${p.index}`}
               >
                 <OrbitCardImage src={p.cover} />
@@ -282,7 +286,7 @@ export default function ProjectsList() {
                   <span
                     key={`${rep}-${p.id}`}
                     className="orbit__ruler-num sys-label"
-                    style={{ left: `${(rep * 360 + i * STEP) * RULER_PX_PER_DEG}px` }}
+                    style={{ left: `${(rep * 360 - DIR * i * STEP) * RULER_PX_PER_DEG}px` }}
                   >
                     {p.index}
                   </span>
