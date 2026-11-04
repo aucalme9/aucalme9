@@ -6,6 +6,11 @@
   background: var(--color-surface);
 }
 
+/* 좁은 화면에서 그래프 가로 스크롤 */
+.node-graph__scroll {
+  overflow-x: auto;
+}
+
 /* [여백조정] 상단 라벨 안쪽 여백 */
 .node-graph__label {
   padding: var(--space-2);
@@ -73,10 +78,10 @@
 }
 
 .node-graph__node-header {
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-1) 12px;
   color: var(--color-text-primary);
   border-bottom: var(--border);
-  white-space: nowrap;
+  white-space: normal; /* 긴 이름은 띄어쓰기 위치에서 줄바꿈 */
   overflow: hidden;
   text-overflow: ellipsis;
 }

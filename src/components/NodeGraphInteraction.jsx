@@ -4,20 +4,37 @@
 import { useState, useRef, useCallback } from 'react'
 import './NodeGraphInteraction.css'
 
-export default function NodeGraphInteraction({ tools = [] }) {
-  const containerRef = useRef(null)
-  // ── 노드 정의 ────────────────────────────────────────────────────────
-  //  [내용수정] label = 박스에 표시되는 글자 (core 는 프로젝트 첫 번째 tool 을 자동 사용)
-  //  [위치조정] x, y = 그래프 안에서의 초기 좌표(px). 값을 바꾸면 시작 배치가 달라짐
-  //  [노드 추가/삭제] 줄을 추가·삭제하고, 아래 edges 의 연결도 함께 맞추면 됨
-  //  type 값(source/process/output)은 CSS 색상 클래스와 연결됨 → 임의 변경 금지
-  const [nodes, setNodes] = useState([
+// steps 를 주면 (projects.js 의 fields.structure) 그 단계들을 왼쪽→오른쪽으로 이어진 노드로 표시.
+//  없으면 기본 3단: INPUT → (첫 번째 툴) → OUTPUT
+function buildNodes(tools, steps) {
+  if (steps && steps.length) {
+    const gap = 200 // [위치조정] 노드 사이 가로 간격(px)
+    return steps.map((label, i) => ({
+      id: `s${i}`,
+      label: label.toUpperCase(),
+      type: i === 0 ? 'source' : i === steps.length - 1 ? 'output' : 'process',
+      x: 40 + i * gap,
+      y: i % 2 === 0 ? 90 : 40,
+    }))
+  }
+  return [
     { id: 'input', label: 'INPUT', type: 'source', x: 40, y: 90 },
     { id: 'core', label: (tools[0] || 'PROCESS').toUpperCase(), type: 'process', x: 240, y: 40 },
     { id: 'output', label: 'OUTPUT', type: 'output', x: 440, y: 100 },
-  ])
-  // [연결선 정의] from → to 는 위 노드의 id. 노드를 추가했다면 여기에 연결도 추가.
-  const edges = [{ from: 'input', to: 'core' }, { from: 'core', to: 'output' }]
+  ]
+}
+
+export default function NodeGraphInteraction({ tools = [], steps = null }) {
+  const containerRef = useRef(null)
+  // ── 노드 정의 ────────────────────────────────────────────────────────
+  //  type 값(source/process/output)은 CSS 색상 클래스와 연결됨 → 임의 변경 금지
+  //  [내용수정] 노드 이름·개수는 projects.js (tools 첫 항목 또는 fields.structure)
+  //  [위치조정] 초기 좌표는 위 buildNodes 의 x, y
+  const [nodes, setNodes] = useState(() => buildNodes(tools, steps))
+  // [연결선 정의] 노드 순서대로 앞→뒤 연결
+  const edges = nodes.slice(1).map((n, i) => ({ from: nodes[i].id, to: n.id }))
+  // 처음 배치된 노드가 모두 들어가는 최소 폭(px) — 140 = 노드 폭, 40 = 오른쪽 여유
+  const [fieldMinWidth] = useState(() => Math.max(...buildNodes(tools, steps).map((n) => n.x)) + 140 + 40)
   const dragRef = useRef(null)
 
   const onMouseMove = useCallback((e) => {
@@ -56,7 +73,9 @@ export default function NodeGraphInteraction({ tools = [] }) {
       {/* [내용수정] 그래프 상단 라벨 텍스트 */}
       <div className="node-graph__label sys-label">SYSTEM / NETWORK VIEW</div>
       {/* [레이아웃조정] 그래프 표시 영역 높이·격자 무늬는 NodeGraphInteraction.css → .node-graph__field */}
-      <div className="node-graph__field" ref={containerRef}>
+      {/* 좁은 화면에서는 노드가 잘리지 않도록 가로 스크롤 (필드 최소 폭 = 노드 배치 폭) */}
+      <div className="node-graph__scroll">
+      <div className="node-graph__field" ref={containerRef} style={{ minWidth: fieldMinWidth }}>
         <svg className="node-graph__lines">
           {edges.map((edge, i) => {
             const from = getPort(edge.from, 'out')
@@ -80,6 +99,7 @@ export default function NodeGraphInteraction({ tools = [] }) {
             <div className="node-graph__port node-graph__port--out" />
           </div>
         ))}
+      </div>
       </div>
     </div>
   )

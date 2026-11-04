@@ -45,14 +45,14 @@ export const strings = {
   },
 
   // ── Projects 목록 페이지: 필터 카테고리 [내용수정] ───────────────────
-  //    key 는 projects.js 의 category 값과 일치해야 함. 'all' 은 전체 표시.
+  //    key 는 projects.js 의 CATEGORY_KEYS / categories 값과 일치해야 함. 'all' 은 전체 표시.
   filters: {
     all: { ko: 'ALL', en: 'ALL' },
-    'media-art': { ko: 'MEDIA ART', en: 'MEDIA ART' },
-    generative: { ko: 'GENERATIVE', en: 'GENERATIVE' },
-    interactive: { ko: 'INTERACTIVE', en: 'INTERACTIVE' },
-    '3d': { ko: '3D', en: '3D' },
+    'point-cloud': { ko: 'POINT CLOUD', en: 'POINT CLOUD' },
     'audio-reactive': { ko: 'AUDIO REACTIVE', en: 'AUDIO REACTIVE' },
+    exhibition: { ko: 'EXHIBITION', en: 'EXHIBITION' },
+    award: { ko: 'AWARD', en: 'AWARD' },
+    client: { ko: 'CLIENT WORK', en: 'CLIENT WORK' },
     experiment: { ko: 'EXPERIMENT', en: 'EXPERIMENT' },
     other: { ko: 'OTHER', en: 'OTHER' },
   },
@@ -112,10 +112,13 @@ export const strings = {
     ],
   },
 
-  // ── 프로젝트 상세 페이지의 섹션 제목 (10단계) [내용수정] ─────────────
+  // ── 프로젝트 상세 페이지의 섹션 제목 [내용수정] ─────────────
   //    각 프로젝트 본문 내용은 여기가 아니라 src/data/projects.js 에서 입력합니다.
   project: {
     overview: { ko: 'Overview', en: 'Overview' },
+    keyWork: { ko: 'Key Work', en: 'Key Work' },                 // 주요 작업
+    experiments: { ko: 'Key Experiments', en: 'Key Experiments' }, // 주요 실험
+    structure: { ko: 'System Structure', en: 'System Structure' }, // 구현 구조
     concept: { ko: 'Concept', en: 'Concept' },
     systemFlow: { ko: 'System Flow', en: 'System Flow' },
     systemArchitecture: { ko: 'System Architecture', en: 'System Architecture' },

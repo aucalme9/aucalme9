@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { strings } from '../i18n/strings'
-import { projects } from '../data/projects'
+import { projects, CATEGORY_KEYS, inCategory, metaLine } from '../data/projects'
 import ProjectCard from '../components/ProjectCard'
 import { blockStyle } from '../utils/layout'
 import './ProjectsList.css'
@@ -34,13 +34,13 @@ const CARD_W = 280 * (CARD_SIZE / 50)          // 기본(50) → 280 x 360
 const CARD_H = 360 * (CARD_SIZE / 50)
 const RING_X = (RING_POS_X - 50) * 10          // px, 50=0
 const RING_Y = (RING_POS_Y - 50) * 10
-const STEP = 360 / projects.length             // 카드 사이 각도(6개 → 60°)
+const STEP = 360 / projects.length             // 카드 사이 각도(7개 → 약 51°)
 const REDUCED = typeof window !== 'undefined'
   && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 // ── 목록 필터 카테고리 (라벨은 src/i18n/strings.js → filters.*) ─────────
-//  'all' = 전체. 나머지는 projects.js 의 category 값과 일치해야 함.
-const FILTER_KEYS = ['all', 'media-art', 'generative', 'interactive', '3d', 'audio-reactive', 'experiment', 'other']
+//  순서·키는 src/data/projects.js 의 CATEGORY_KEYS 에서 관리 ('all' = 전체).
+const FILTER_KEYS = CATEGORY_KEYS
 
 function OrbitCardImage({ src }) {
   // 카드 전체 커버 이미지. 없거나 깨지면 사선 패턴으로 대체 (다른 카드와 동일 규칙).
@@ -64,7 +64,7 @@ export default function ProjectsList() {
   const [filter, setFilter] = useState('all')       // 활성 카테고리 필터
   const filterRef = useRef('all')                    // rAF 루프가 리렌더 없이 읽는 최신 필터값
   filterRef.current = filter
-  const isOut = (p) => filterRef.current !== 'all' && p.category !== filterRef.current
+  const isOut = (p) => !inCategory(p, filterRef.current)
 
   const orbitRef = useRef(null)
   const worldRef = useRef(null)
@@ -267,7 +267,7 @@ export default function ProjectsList() {
                   <span className="orbit__card-sub">{p.subtitle[lang]}</span>
                   {/* 카드 메타: YEAR / TYPE / TOOLS / ROLE (내용은 projects.js) */}
                   <span className="orbit__card-meta sys-label">
-                    {p.year} · {(strings.filters[p.category] || strings.filters.other)[lang]} · {p.tools.join(', ')} · {p.role[lang]}
+                    {metaLine(p, lang, { tools: true })}
                   </span>
                 </div>
               </Link>
@@ -311,7 +311,7 @@ export default function ProjectsList() {
             ))}
           </div>
           <div className="projects-list__grid">
-            {projects.filter((p) => filter === 'all' || p.category === filter).map((p) => (
+            {projects.filter((p) => inCategory(p, filter)).map((p) => (
               <ProjectCard key={p.id} project={p} />
             ))}
           </div>

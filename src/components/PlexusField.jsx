@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createAudio } from './plexusAudio'
 import { useLanguage } from '../i18n/LanguageContext'
 import { strings } from '../i18n/strings'
-import { projects } from '../data/projects'
+import { projects, metaLine } from '../data/projects'
 import './PlexusField.css'
 
 // PlexusField — Home 풀스크린. 별밤 + HUD 레이아웃 배경 위에 여러 겹의 구(球).
@@ -254,7 +254,7 @@ export default function PlexusField() {
         label = `PROJECT ${p.index}`
         lines = [
           p.title[L],
-          (strings.filters[p.category] || strings.filters.other)[L] + ' · ' + p.year,
+          metaLine(p, L),
           p.subtitle[L],
         ]
       } else if (Math.random() < 0.5) {

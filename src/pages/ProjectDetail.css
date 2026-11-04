@@ -132,7 +132,67 @@
   max-width: 70ch;
 }
 
-/* 09 TOOLS — 태그 목록 */
+/* KEY WORK / KEY EXPERIMENTS — 한 줄씩 나열되는 목록 */
+.project-detail__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 70ch;
+  color: var(--color-text-secondary);
+  border-bottom: var(--border);
+  padding-bottom: var(--space-1);
+}
+.project-detail__list li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: 10px 0;
+}
+.project-detail__list li + li {
+  border-top: var(--border);
+}
+.project-detail__list-n {
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+/* [크기조정] 실험 이름 칸 폭 (11rem) */
+.project-detail__list--named li {
+  grid-template-columns: 11rem 1fr;
+}
+.project-detail__list-name {
+  color: var(--color-purple-400);
+}
+
+/* SYSTEM STRUCTURE — 단계 → 단계 흐름 */
+.project-detail__flow {
+  margin: 0;
+  padding: 0 0 var(--space-3);
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--space-1);
+  border-bottom: var(--border);
+}
+.project-detail__flow li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 8px 12px;
+  border: 1px solid var(--color-purple-muted);
+  color: var(--color-text-primary);
+}
+.project-detail__flow li.project-detail__flow-arrow {
+  border: 0;
+  padding: 0 2px;
+  color: var(--color-purple-400);
+}
+.project-detail__flow-n {
+  color: var(--color-purple-400);
+}
+
+/* TOOLS — 태그 목록 */
 .project-detail__tool-list {
   display: flex;
   flex-wrap: wrap;
@@ -216,5 +276,10 @@
   }
   .project-detail__section-label {
     padding-top: var(--space-2);
+  }
+  /* 실험 이름을 설명 위로 쌓기 */
+  .project-detail__list--named li {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 }
