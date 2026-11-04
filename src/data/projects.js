@@ -44,9 +44,10 @@ export const CATEGORY_KEYS = ['all', 'point-cloud', 'audio-reactive', 'exhibitio
 //  [미디어첨부] media : 3D 표면에 씌울 영상/이미지 경로. 비우면 제너레이티브 테스트 패턴 재생.
 //               예) '/assets/projects/project-01/result/mapping.mp4'  (가로 2:1 비율 권장, 음소거 자동재생)
 //               ※ 유튜브 링크는 3D 표면에 씌울 수 없음 → mp4/webm/jpg/png 파일로.
-//  [분류값]     modes : 보여줄 표면과 순서. 'split'(분할) / 'dome'(반구형) / 'walls'(3면 벽). 첫 번째가 기본 탭.
+//  [분류값]     modes : 보여줄 표면과 순서. 기본 = 분할('split') → 3면 벽('walls') → 반구형('dome'), 첫 번째가 기본 탭.
+//               프로젝트별로 바꾸려면 MAPPING(['walls', 'split']) 처럼 순서를 넣으면 됩니다.
 //  [내용수정]   specs.<mode> : 카드에 표시되는 실제 스펙 값 (지금은 예시값 placeholder)
-const MAPPING = (modes = ['split', 'dome', 'walls'], overrides = {}) => ({
+const MAPPING = (modes = ['split', 'walls', 'dome'], overrides = {}) => ({
   media: '',
   modes,
   specs: {
@@ -79,7 +80,7 @@ export const projects = [
     cover: '/assets/projects/project-01/cover/cover.jpg', // [미디어첨부]
     gallery: [],                                          // [미디어첨부] 예) '/assets/projects/project-01/result/still-01.jpg'
     video: { youtubeId: '' },                             // [미디어첨부]
-    mapping: MAPPING(['dome', 'walls', 'split']),          // [미디어첨부][내용수정] 상단 맵핑 미리보기
+    mapping: MAPPING(),          // [미디어첨부][내용수정] 상단 맵핑 미리보기
     fields: {
       overview: t(
         '드론 및 LiDAR 데이터를 활용한 3D 공간 재구성 프로젝트.',
@@ -110,7 +111,7 @@ export const projects = [
     cover: '/assets/projects/project-02/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['split', 'dome', 'walls']),
+    mapping: MAPPING(),
     fields: {
       overview: t(
         '3D 스캔 오브젝트와 음악의 주파수 데이터를 결합한 오디오 반응형 비주얼.',
@@ -141,7 +142,7 @@ export const projects = [
     cover: '/assets/projects/project-03/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['dome', 'split', 'walls']),
+    mapping: MAPPING(),
     fields: {
       overview: t(
         'Point Cloud 데이터와 오디오 반응 시스템을 결합한 실시간 시각화 프로젝트.',
@@ -172,7 +173,7 @@ export const projects = [
     cover: '/assets/projects/project-04/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['walls', 'split', 'dome']),
+    mapping: MAPPING(),
     fields: {
       overview: t(
         '졸업전시를 위한 영상 및 공간 기반 비주얼 콘텐츠 제작.',
@@ -203,7 +204,7 @@ export const projects = [
     cover: '/assets/projects/project-05/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['split', 'walls', 'dome']),
+    mapping: MAPPING(),
     fields: {
       overview: t('공모전 출품 및 수상 프로젝트.', 'A project entered in a competition and awarded.'),
       keyWork: [
@@ -230,7 +231,7 @@ export const projects = [
     cover: '/assets/projects/project-06/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['split', 'walls', 'dome']),
+    mapping: MAPPING(),
     fields: {
       overview: t(
         '외부 의뢰를 받아 수행한 영상 및 비주얼 제작 프로젝트.',
@@ -261,7 +262,7 @@ export const projects = [
     cover: '/assets/projects/project-07/cover/cover.jpg',
     gallery: [],
     video: { youtubeId: '' },
-    mapping: MAPPING(['walls', 'split', 'dome']),
+    mapping: MAPPING(),
     fields: {
       overview: t(
         '다양한 입력 장치와 데이터 통신 방식을 활용한 인터랙티브 비주얼 실험.',

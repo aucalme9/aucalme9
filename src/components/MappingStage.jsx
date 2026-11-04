@@ -13,7 +13,7 @@ import { createMappingEngine, hasWebGL } from './mapping/mappingEngine'
 import { createContentSource } from './mapping/contentSource'
 import './MappingStage.css'
 
-const ALL_MODES = ['split', 'dome', 'walls']
+const ALL_MODES = ['split', 'walls', 'dome'] // 기본 탭 순서: 분할 → 3면 벽 → 반구형
 const PURPLE = '#8a5bff'
 
 // 픽셀맵 카드 — 콘텐츠 원본 위에 '어느 영역이 어느 화면으로 가는지' 구획을 겹쳐 표시
