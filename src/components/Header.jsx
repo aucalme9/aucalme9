@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import { strings } from '../i18n/strings'
+import { useTheme } from '../theme/ThemeContext'
 import './Header.css'
 
 export default function Header() {
   const { lang, toggleLang } = useLanguage()
+  const { theme, toggleTheme } = useTheme()
 
   // ── 메뉴 항목 목록 ───────────────────────────────────────────────────
   //  [메뉴 추가/삭제] 이 배열에서 줄을 추가·삭제 (to = 이동 경로, label = 표시 텍스트)
@@ -44,6 +46,20 @@ export default function Header() {
           </ul>
         </nav>
 
+        {/* 우측 버튼 묶음: 라이트/다크 + 한/영 */}
+        <div className="site-header__actions">
+        {/* 라이트/다크 모드 전환 — 버튼에는 '지금 모드'를 표시. 문구는 strings.js → theme.* */}
+        <button
+          type="button"
+          className="site-header__theme sys-label"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? strings.theme.toLight[lang] : strings.theme.toDark[lang]}
+          aria-pressed={theme === 'light'}
+        >
+          <span className="site-header__theme-icon" aria-hidden="true">{theme === 'dark' ? '☾' : '☀'}</span>
+          <span className="site-header__theme-text">{strings.theme[theme][lang]}</span>
+        </button>
+
         {/* 한/영 전환 버튼. [내용수정] 버튼에 보이는 라벨 텍스트만 아래에서 변경 가능.
             [레이아웃조정] 위치·색은 Header.css → .site-header__lang */}
         <button
@@ -54,6 +70,7 @@ export default function Header() {
         >
           {lang === 'ko' ? 'KR / EN' : 'EN / KR'}
         </button>
+        </div>
       </div>
     </header>
   )

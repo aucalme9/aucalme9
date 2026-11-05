@@ -9,6 +9,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import { useEffect, useRef, useState } from 'react'
 import { strings } from '../i18n/strings'
+import { useTheme } from '../theme/ThemeContext'
 import { createMappingEngine, hasWebGL } from './mapping/mappingEngine'
 import { createContentSource } from './mapping/contentSource'
 import './MappingStage.css'
@@ -83,8 +84,10 @@ export default function MappingStage({ project, lang }) {
   const cfg = project.mapping || {}
   const modes = (cfg.modes || ALL_MODES).filter((m) => ALL_MODES.includes(m))
   const [mode, setMode] = useState(modes[0] || 'split')
-  // [기본값] 처음 들어왔을 때 환경: 'night'(어두운 실내/밤) 또는 'day'(낮)
-  const [time, setTime] = useState('night')
+  // 처음 환경은 사이트 모드를 따름: 다크 → 'night'(어두운 실내/밤) / 라이트 → 'day'(낮)
+  //  사이트 모드를 바꾸면 같이 바뀌고, 우측 DAY / NIGHT 버튼으로 따로 바꿀 수도 있음
+  const { theme } = useTheme()
+  const [time, setTime] = useState(() => (theme === 'light' ? 'day' : 'night'))
   const [regions, setRegions] = useState([])
   const [source, setSource] = useState(null)
   const [webgl] = useState(() => hasWebGL())
@@ -120,6 +123,12 @@ export default function MappingStage({ project, lang }) {
     engineRef.current?.setMode(m)
     setRegions(engineRef.current?.getRegions(m) || [])
   }
+
+  useEffect(() => {
+    const t2 = theme === 'light' ? 'day' : 'night'
+    setTime(t2)
+    engineRef.current?.setTime(t2)
+  }, [theme])
 
   const toggleTime = () => {
     const next = time === 'night' ? 'day' : 'night'

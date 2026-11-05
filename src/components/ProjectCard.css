@@ -48,7 +48,7 @@
   top: var(--space-2);
   left: var(--space-2);
   color: var(--color-text-primary);
-  background: rgba(10, 10, 11, 0.7);
+  background: rgba(var(--color-bg-rgb), 0.7);
   padding: 2px 6px;
 }
 

@@ -14,7 +14,7 @@
   z-index: 3;
   width: 230px;
   padding: var(--space-2);
-  background: rgba(10, 10, 11, 0.82);
+  background: rgba(var(--color-bg-rgb), 0.82);
   border: 1px solid var(--color-line-strong);
   border-left: 2px solid var(--color-purple-500);
   pointer-events: none;
@@ -84,7 +84,7 @@
   gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
   color: var(--color-text-tertiary);
-  background: rgba(10, 10, 11, 0.7);
+  background: rgba(var(--color-bg-rgb), 0.7);
   border: 1px solid var(--color-line-strong);
   cursor: pointer;
   letter-spacing: 0.16em;

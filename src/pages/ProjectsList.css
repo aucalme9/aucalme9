@@ -115,7 +115,7 @@
   flex-direction: column;
   gap: var(--space-1);
   border-top: var(--border);
-  background-color: rgba(10, 10, 11, 0.55);   /* 백드롭 필터가 막힌 브라우저용 최소 틴트 */
+  background-color: rgba(var(--color-bg-rgb), 0.55);   /* 백드롭 필터가 막힌 브라우저용 최소 틴트 */
   backdrop-filter: var(--card-body-filter, blur(10px) brightness(0.4) saturate(0.8));
   -webkit-backdrop-filter: var(--card-body-filter, blur(10px) brightness(0.4) saturate(0.8));
 }
@@ -155,7 +155,7 @@
   padding: 3px 8px;
   color: var(--color-text-tertiary);
   border: 1px solid var(--color-line-strong);
-  background: rgba(10, 10, 11, 0.72);
+  background: rgba(var(--color-bg-rgb), 0.72);
   cursor: pointer;
   letter-spacing: 0.1em;
   transition: color var(--transition-base), border-color var(--transition-base);

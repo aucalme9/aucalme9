@@ -13,6 +13,7 @@ html, body {
   font-size: var(--fs-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 body {

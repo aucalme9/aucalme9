@@ -17,6 +17,14 @@ export const strings = {
     contact: { ko: 'Contact', en: 'Contact' },
   },
 
+  // ── 상단바 라이트/다크 모드 버튼 [내용수정] ─────────────────────────
+  theme: {
+    light: { ko: 'LIGHT', en: 'LIGHT' },
+    dark: { ko: 'DARK', en: 'DARK' },
+    toLight: { ko: '라이트 모드로 전환', en: 'Switch to light mode' },
+    toDark: { ko: '다크 모드로 전환', en: 'Switch to dark mode' },
+  },
+
   // ── 홈 상단 히어로 영역 [내용수정] ───────────────────────────────────
   hero: {
     // 직함/역할 라벨 (작은 대문자 라인)
