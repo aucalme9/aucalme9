@@ -12,6 +12,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 
 const COLORS = {
   bg: 0x0a0a0b,
@@ -203,14 +207,40 @@ function buildWalls(mats) {
   rw.rotation.y = -Math.PI / 2
   group.add(lw, fw, rw)
 
-  // 상부 프로젝터 3대 (입구 쪽 트러스에 매달림)
-  const bar = new THREE.Mesh(new THREE.BoxGeometry(W, 0.2, 0.2), mats.structure)
-  bar.position.set(0, H + 0.3, D / 2 - 0.5)
-  group.add(bar)
-  ;[-4, 0, 4].forEach((x) => {
+  // 상부 프로젝터 3대 — 정면용 1대(입구 쪽 트러스) + 좌·우 벽용 2대(가운데 트러스, 반대편 벽을 향해 교차 투사)
+  const PJ_Y = H + 0.05
+  const bars = [
+    { w: 4, pos: [0, H + 0.3, D / 2 - 0.8] },
+    { w: W - 1, pos: [0, H + 0.3, 0] },
+  ]
+  bars.forEach(({ w, pos }) => {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(w, 0.2, 0.2), mats.structure)
+    bar.position.set(...pos)
+    group.add(bar)
+  })
+  const projectors = [
+    { at: [0, PJ_Y, D / 2 - 0.8], wall: [[-W / 2, 0, -D / 2], [W / 2, 0, -D / 2], [W / 2, H, -D / 2], [-W / 2, H, -D / 2]] }, // 정면
+    { at: [W / 2 - 1.5, PJ_Y, 0], wall: [[-W / 2, 0, D / 2], [-W / 2, 0, -D / 2], [-W / 2, H, -D / 2], [-W / 2, H, D / 2]] },  // 좌측 벽
+    { at: [-W / 2 + 1.5, PJ_Y, 0], wall: [[W / 2, 0, -D / 2], [W / 2, 0, D / 2], [W / 2, H, D / 2], [W / 2, H, -D / 2]] },   // 우측 벽
+  ]
+  const beams = []
+  projectors.forEach(({ at, wall }) => {
     const pj = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 0.5), mats.structure)
-    pj.position.set(x, H + 0.05, D / 2 - 0.5)
+    pj.position.set(...at)
+    pj.lookAt(new THREE.Vector3(...wall[0]).add(new THREE.Vector3(...wall[2])).multiplyScalar(0.5))
     group.add(pj)
+    // 빔(빛줄기) — 렌즈에서 벽 네 모서리로 퍼지는 반투명 사각뿔
+    const pts = [at, ...wall]
+    const pos = new Float32Array(4 * 3 * 3)
+    for (let k = 0; k < 4; k++) {
+      ;[pts[0], pts[1 + k], pts[1 + ((k + 1) % 4)]].forEach((v, j) => pos.set(v, (k * 3 + j) * 3))
+    }
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    const beam = new THREE.Mesh(geo, mats.beam)
+    beam.renderOrder = 2
+    group.add(beam)
+    beams.push(beam)
   })
 
   // 관람객
@@ -225,41 +255,78 @@ function buildWalls(mats) {
     { label: 'FRONT', ...front },
     { label: 'RIGHT', ...right },
   ]
-  return { group, regions }
+  return { group, regions, beams }
 }
 
 const BUILDERS = { split: buildSplit, dome: buildDome, walls: buildWalls }
 
-export function createMappingEngine({ container, source, initialMode = 'split', reducedMotion = false }) {
+// ── 화면에서 주변으로 번지는 빛 (모드별 포인트 조명) ───────────────────────
+//  [밝기조정] intensity 값. 화면 콘텐츠 색(보라)에 맞춘 은은한 반사광입니다.
+const SPILL = {
+  split: [{ pos: [0, 3.2, 1.2], intensity: 45, distance: 20 }],
+  dome: [0, 1, 2, 3].map((k) => {
+    const a = (k / 4) * Math.PI * 2 + Math.PI / 4
+    return { pos: [Math.cos(a) * 8.5, 2.5, Math.sin(a) * 8.5], intensity: 28, distance: 16 }
+  }),
+  walls: [{ pos: [0, 2.2, -0.5], intensity: 30, distance: 14 }],
+}
+
+// ── DAY / NIGHT 환경값 ─────────────────────────────────────────────────
+//  [색상변경] bg = 하늘/배경색, floor = 바닥, grid = 격자선
+//  [밝기조정] ambient/hemi/sun = 자연광, spill = 화면 반사광 배율,
+//             bloom = 화면이 빛나 보이는 정도(strength), screen = 화면 밝기 배율, beam = 프로젝터 빛줄기 진하기
+const THEMES = {
+  night: {
+    bg: 0x0a0a0b, fogNear: 20, fogFar: 48,
+    floor: 0x0d0d10, floorRough: 0.55, floorMetal: 0.35,
+    grid: [0x3c3c44, 0x29292f], structure: 0x1a1a1e, figure: 0x3c3c44,
+    ambient: 0.28, hemi: 0.12, sun: 0.25, sunColor: 0xb8c0ff, shadows: false,
+    spill: 1, bloom: { strength: 0.85, radius: 0.55, threshold: 0.18 }, screen: 1.25, beam: 0.028, gridOpacity: 1,
+  },
+  day: {
+    bg: 0xd4d6da, fogNear: 34, fogFar: 95,
+    floor: 0xa3a5aa, floorRough: 0.92, floorMetal: 0,
+    grid: [0x8a8c92, 0x989aa0], structure: 0x4a4b52, figure: 0x55565e,
+    ambient: 0.75, hemi: 0.9, sun: 2.4, sunColor: 0xfff4e6, shadows: true,
+    spill: 0.15, bloom: { strength: 0.18, radius: 0.4, threshold: 0.75 }, screen: 1.0, beam: 0.0, gridOpacity: 0.45,
+  },
+}
+
+export function createMappingEngine({ container, source, initialMode = 'split', initialTime = 'night', reducedMotion = false }) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
-  renderer.setClearColor(COLORS.bg, 1)
+  const dpr = Math.min(window.devicePixelRatio || 1, 2)
+  renderer.setPixelRatio(dpr)
   renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
   container.appendChild(renderer.domElement)
 
   const scene = new THREE.Scene()
+  scene.background = new THREE.Color(COLORS.bg)
   scene.fog = new THREE.Fog(COLORS.bg, 20, 48)
 
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 200)
 
-  // 조명 (화면은 자체발광 재질이라 영향 없음 — 구조물/사람만 은은하게)
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55))
-  const key = new THREE.DirectionalLight(0xffffff, 0.6)
-  key.position.set(6, 12, 10)
-  scene.add(key)
-  const spill = new THREE.PointLight(COLORS.purple, 30, 22, 2)
-  spill.position.set(0, 3, 3)
-  scene.add(spill)
+  // 자연광: 전체 밝기 + 하늘/땅 반사 + 해(낮) / 달빛(밤)
+  const ambient = new THREE.AmbientLight(0xffffff, 0.3)
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x8a8a90, 0.2)
+  const sun = new THREE.DirectionalLight(0xffffff, 0.6)
+  sun.position.set(14, 22, 12)
+  sun.shadow.mapSize.set(1024, 1024)
+  Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 70 })
+  sun.shadow.bias = -0.0005
+  scene.add(ambient, hemi, sun)
 
-  // 바닥 + 격자
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ color: COLORS.floor, roughness: 0.95 }),
-  )
+  // 바닥 + 격자 (격자 색을 바꾸기 위해 재질 2개를 직접 지정)
+  const floorMat = new THREE.MeshStandardMaterial({ color: COLORS.floor, roughness: 0.6 })
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), floorMat)
   floor.rotation.x = -Math.PI / 2
+  floor.receiveShadow = true
   scene.add(floor)
   const grid = new THREE.GridHelper(80, 80, COLORS.gridStrong, COLORS.grid)
   grid.position.y = 0.002
+  grid.material.vertexColors = false
+  grid.material.transparent = true
   scene.add(grid)
 
   const applyTex = (tex) => {
@@ -272,6 +339,11 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
     frame: new THREE.MeshStandardMaterial({ color: COLORS.frame, roughness: 0.8 }),
     structure: new THREE.MeshStandardMaterial({ color: COLORS.structure, roughness: 0.85, metalness: 0.1 }),
     figure: new THREE.MeshStandardMaterial({ color: COLORS.figure, roughness: 0.9 }),
+    // 프로젝터 빛줄기 — 더해지는(additive) 반투명 면
+    beam: new THREE.MeshBasicMaterial({
+      color: 0x9d7dff, transparent: true, opacity: 0.028, side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
+    }),
   }
   source.onSwap = (tex) => {
     mats.screen.map = applyTex(tex)
@@ -279,11 +351,61 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
   }
 
   const modes = {}
+  const spills = []
   Object.entries(BUILDERS).forEach(([k, build]) => {
     modes[k] = build(mats)
-    modes[k].group.visible = false
-    scene.add(modes[k].group)
+    const g = modes[k].group
+    g.traverse((o) => {
+      if (o.isMesh && o.material !== mats.beam) { o.castShadow = true; o.receiveShadow = o.material !== mats.screen }
+    })
+    SPILL[k].forEach(({ pos, intensity, distance }) => {
+      const l = new THREE.PointLight(COLORS.purple, intensity, distance, 2)
+      l.position.set(...pos)
+      l.userData.base = intensity
+      g.add(l)
+      spills.push(l)
+    })
+    g.visible = false
+    scene.add(g)
   })
+
+  // 후처리: 밝은 화면이 살짝 번져 빛나 보이게 (bloom)
+  const composer = new EffectComposer(renderer)
+  composer.setPixelRatio(Math.min(dpr, 1.5))
+  composer.addPass(new RenderPass(scene, camera))
+  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.8, 0.5, 0.2)
+  composer.addPass(bloom)
+  composer.addPass(new OutputPass())
+
+  // DAY / NIGHT 전환
+  let time = null
+  const setTime = (tm) => {
+    const th = THEMES[tm]
+    if (!th || tm === time) return
+    time = tm
+    scene.background.setHex(th.bg)
+    scene.fog.color.setHex(th.bg)
+    scene.fog.near = th.fogNear
+    scene.fog.far = th.fogFar
+    floorMat.color.setHex(th.floor)
+    floorMat.roughness = th.floorRough
+    floorMat.metalness = th.floorMetal
+    grid.material.color.setHex(th.grid[0])
+    grid.material.opacity = th.gridOpacity
+    mats.structure.color.setHex(th.structure)
+    mats.figure.color.setHex(th.figure)
+    ambient.intensity = th.ambient
+    hemi.intensity = th.hemi
+    sun.intensity = th.sun
+    sun.color.setHex(th.sunColor)
+    sun.castShadow = th.shadows
+    spills.forEach((l) => { l.intensity = l.userData.base * th.spill })
+    Object.assign(bloom, { strength: th.bloom.strength, radius: th.bloom.radius, threshold: th.bloom.threshold })
+    mats.screen.color.setScalar(th.screen)
+    mats.beam.opacity = th.beam
+    mats.beam.visible = th.beam > 0
+  }
+  setTime(initialTime)
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableDamping = true
@@ -344,6 +466,7 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
     const w = container.clientWidth || 1
     const h = container.clientHeight || 1
     renderer.setSize(w, h, false)
+    composer.setSize(w, h)
     renderer.domElement.style.width = '100%'
     renderer.domElement.style.height = '100%'
     camera.aspect = w / h
@@ -375,7 +498,7 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
       if (k >= 1) tween = null
     }
     controls.update()
-    renderer.render(scene, camera)
+    composer.render()
   }
 
   setMode(initialMode, true)
@@ -383,6 +506,7 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
 
   return {
     setMode,
+    setTime,
     zoom,
     resetView: () => { controls.autoRotate = !reducedMotion; flyTo(CAMERA_PRESETS[mode]) },
     getRegions: (m) => modes[m]?.regions || [],
@@ -395,7 +519,9 @@ export function createMappingEngine({ container, source, initialMode = 'split', 
         if (o.geometry) o.geometry.dispose()
       })
       Object.values(mats).forEach((m) => m.dispose())
-      floor.material.dispose()
+      floorMat.dispose()
+      grid.material.dispose()
+      composer.dispose()
       renderer.dispose()
       renderer.domElement.remove()
     },

@@ -147,6 +147,11 @@ export const strings = {
     reset: { ko: '시점 초기화', en: 'Reset view' },
     zoomIn: { ko: '확대', en: 'Zoom in' },
     zoomOut: { ko: '축소', en: 'Zoom out' },
+    // DAY / NIGHT 전환 버튼 (우측 버튼 맨 아래)
+    day: { ko: 'DAY', en: 'DAY' },
+    night: { ko: 'NIGHT', en: 'NIGHT' },
+    toDay: { ko: '낮 환경으로 전환', en: 'Switch to day' },
+    toNight: { ko: '밤 환경으로 전환', en: 'Switch to night' },
     noWebgl: { ko: 'NO_SIGNAL — 이 브라우저에서는 3D 미리보기를 표시할 수 없습니다', en: 'NO_SIGNAL — 3D PREVIEW UNAVAILABLE IN THIS BROWSER' },
     sourceTest: { ko: 'SOURCE · TEST PATTERN', en: 'SOURCE · TEST PATTERN' },
     sourceMedia: { ko: 'SOURCE · PROJECT MEDIA', en: 'SOURCE · PROJECT MEDIA' },

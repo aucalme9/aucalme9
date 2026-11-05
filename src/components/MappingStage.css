@@ -119,6 +119,21 @@
   font-size: 1rem;
 }
 
+/* DAY / NIGHT 전환 버튼 — 아이콘 + 글자 2줄 */
+.mapping__btn--time {
+  height: 52px;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.5625rem;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+.mapping__btn--time span:first-child {
+  font-size: 1rem;
+  color: var(--color-purple-400);
+  letter-spacing: 0;
+}
+
 /* [위치조정] 좌하단 조작 안내 */
 .mapping__hint {
   left: var(--space-2);

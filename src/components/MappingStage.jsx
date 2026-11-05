@@ -83,6 +83,8 @@ export default function MappingStage({ project, lang }) {
   const cfg = project.mapping || {}
   const modes = (cfg.modes || ALL_MODES).filter((m) => ALL_MODES.includes(m))
   const [mode, setMode] = useState(modes[0] || 'split')
+  // [기본값] 처음 들어왔을 때 환경: 'night'(어두운 실내/밤) 또는 'day'(낮)
+  const [time, setTime] = useState('night')
   const [regions, setRegions] = useState([])
   const [source, setSource] = useState(null)
   const [webgl] = useState(() => hasWebGL())
@@ -98,6 +100,7 @@ export default function MappingStage({ project, lang }) {
       container: viewportRef.current,
       source: src,
       initialMode: modes[0] || 'split',
+      initialTime: time,
       reducedMotion,
     })
     engineRef.current = engine
@@ -118,6 +121,12 @@ export default function MappingStage({ project, lang }) {
     setRegions(engineRef.current?.getRegions(m) || [])
   }
 
+  const toggleTime = () => {
+    const next = time === 'night' ? 'day' : 'night'
+    setTime(next)
+    engineRef.current?.setTime(next)
+  }
+
   const info = t.modes[mode]
   const spec = cfg.specs?.[mode] || {}
   const sourceLabel = cfg.media ? t.sourceMedia : t.sourceTest
@@ -133,7 +142,7 @@ export default function MappingStage({ project, lang }) {
         {/* 좌상단 라벨 */}
         <div className="mapping__tag sys-label">
           <span className="mapping__tag-key">{t.label[lang]}</span>
-          <span>P.{project.index} · {info.name[lang]}</span>
+          <span>P.{project.index} · {info.name[lang]} · {t[time][lang]}</span>
         </div>
 
         {/* 상단 가운데 — 표면 전환 탭 [내용수정] 탭 이름은 strings.js mapping.modes.*.tab */}
@@ -159,6 +168,16 @@ export default function MappingStage({ project, lang }) {
             <button className="mapping__btn" onClick={() => engineRef.current?.zoom(0.8)} aria-label={t.zoomIn[lang]}>+</button>
             <button className="mapping__btn" onClick={() => engineRef.current?.zoom(1.25)} aria-label={t.zoomOut[lang]}>−</button>
             <button className="mapping__btn mapping__btn--reset" onClick={() => engineRef.current?.resetView()} aria-label={t.reset[lang]}>⟲</button>
+            {/* DAY / NIGHT 전환 — 버튼에는 '지금 환경'을 표시 */}
+            <button
+              className={`mapping__btn mapping__btn--time sys-label is-${time}`}
+              onClick={toggleTime}
+              aria-label={time === 'night' ? t.toDay[lang] : t.toNight[lang]}
+              aria-pressed={time === 'day'}
+            >
+              <span aria-hidden="true">{time === 'night' ? '☾' : '☀'}</span>
+              <span>{t[time][lang]}</span>
+            </button>
           </div>
         )}
 
